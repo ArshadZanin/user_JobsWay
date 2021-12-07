@@ -107,12 +107,13 @@ class TestJobPage extends StatelessWidget {
                 child: widgets.textColorButton(
                     text: 'Submit Task',
                     onPress: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const HomePage(),
-                        ),
-                      );
+                      // Navigator.pushReplacement(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (_) => const HomePage(),
+                      //   ),
+                      // );
+                      Navigator.pop(context);
                     }),
               ),
             ],

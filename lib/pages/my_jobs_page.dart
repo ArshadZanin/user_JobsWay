@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
+import 'package:jobs_way/pages/test_job_page.dart';
 
 class MyJobsPage extends StatefulWidget {
   const MyJobsPage({Key? key}) : super(key: key);
@@ -25,7 +26,14 @@ class _MyJobsPageState extends State<MyJobsPage> {
                     'size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF',
                 companyName: 'Google',
                 companyLocation: 'Bangalore, India',
-                onPress: () {  }
+                onPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => TestJobPage(),
+                    ),
+                  );
+                }
                 ),
             widgets.headingTexts(
                 blackText: 'My',
