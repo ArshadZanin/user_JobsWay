@@ -1,9 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
 import 'package:jobs_way/pages/add_profile_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -15,6 +20,23 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
 
   final widgets = Get.put(WidgetController());
+  Uint8List? bytesImage;
+
+  @override
+  initState() {
+    super.initState();
+    retrieveData().whenComplete(() {
+      setState(() {
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    bytesImage = null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,16 +77,18 @@ class _ProfilePageState extends State<ProfilePage> {
                           padding: const EdgeInsets.symmetric(horizontal: 60,vertical: 30),
                           child: Container(
                             height: 300,
-                            width: 250,
+                            width: 225,
                               decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(30),
+                                color: const Color(0xFFF2F2F2),
+                                borderRadius: BorderRadius.circular(20),
                               ),
-                              child: Image.network(
-                                  'https://gust-production.s3.amazonaws.com/uploads/'
-                                      'startup/logo_image/56445/'
-                                      'Flutter_app_icon_whtbg.jpg',
-                                fit: BoxFit.cover,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: bytesImage != null ?
+                                Image.memory(
+                                  bytesImage!,
+                                  fit: BoxFit.cover,
+                                ):Container(),
                               ),
                           ),
                         ),
@@ -216,4 +240,11 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
+  Future<void> retrieveData() async{
+    final preferences = await SharedPreferences.getInstance();
+    String? result = preferences.getString("image");
+    bytesImage = base64Decode(result!);
+  }
+
 }

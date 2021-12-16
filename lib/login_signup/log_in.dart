@@ -68,7 +68,7 @@ class LogIn extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(5),
                           child: SizedBox(
-                            width: 180,
+                            width: 190,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [

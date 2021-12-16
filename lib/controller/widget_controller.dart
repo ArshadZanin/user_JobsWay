@@ -5,6 +5,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:jobs_way/pages/profile_page.dart';
 
 class WidgetController extends GetxController {
+
+  var i = 1.obs;
+  void increment(){
+    i.value++;
+  }
+
   Widget headingTexts({required String blackText, String colorText = ''}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

@@ -19,7 +19,7 @@ class SettingsPage extends StatelessWidget {
               elevation: 5,
               child: ListTile(
                 onTap: () {
-                  Navigator.pushReplacement(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (_) => const AddProfilePage(),
