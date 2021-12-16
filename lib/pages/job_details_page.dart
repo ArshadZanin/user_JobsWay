@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
 import 'package:jobs_way/pages/test_job_page.dart';
 
@@ -14,10 +15,10 @@ class JobDetailsPage extends StatelessWidget {
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.black),
         backgroundColor: const Color(0xFFF2F2F2),
-        title: const Text(
+        title: Text(
           'Job Details',
-          style: TextStyle(
-            color: Color(0xFF008FAE),
+          style: GoogleFonts.poppins(
+            color: const Color(0xFF008FAE),
           ),
         ),
         elevation: 0,
@@ -63,9 +64,9 @@ class JobDetailsPage extends StatelessWidget {
                           const SizedBox(
                             height: 15,
                           ),
-                          const Text(
+                          Text(
                             'Google',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               color: Colors.black,
                               fontSize: 40,
                               fontWeight: FontWeight.bold,
@@ -74,9 +75,9 @@ class JobDetailsPage extends StatelessWidget {
                           const SizedBox(
                             height: 5,
                           ),
-                          const Text(
+                          Text(
                             'Bengaluru, India',
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                               color: Colors.grey,
                               fontSize: 18,
                             ),
@@ -87,10 +88,10 @@ class JobDetailsPage extends StatelessWidget {
                   ),
                 ),
               ),
-              const Center(
+              Center(
                 child: Text(
                   'Sr.Flutter Developer',
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     color: Colors.black,
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -102,17 +103,17 @@ class JobDetailsPage extends StatelessWidget {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [
+                children: [
                   Text(
                     '₹ 30000 - 50000',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.green,
                       fontSize: 25,
                     ),
                   ),
                   Text(
                     'Full time',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 25,
                     ),
@@ -123,44 +124,44 @@ class JobDetailsPage extends StatelessWidget {
                 height: 20,
               ),
               Row(
-                children: const [
+                children: [
                   Text(
                     'Qualification :',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 22,
                     ),
                   ),
                 ],
               ),
-              const Text(
+              Text(
                 'In publishing and graphic design, Lorem ipsum is'
                 ' a placeholder text commonly used .',
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontSize: 18,
                 ),
               ),
-              const Text(
+              Text(
                 'In publishing and graphic design, Lorem ipsum is'
                 ' a placeholder text commonly used .',
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontSize: 18,
                 ),
               ),
-              const Text(
+              Text(
                 'In publishing and graphic design, Lorem ipsum is'
                 ' a placeholder text commonly used .',
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontSize: 18,
                 ),
               ),
-              const Text(
+              Text(
                 'In publishing and graphic design, Lorem ipsum is'
                 ' a placeholder text commonly used .',
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontSize: 18,
                 ),
@@ -169,19 +170,19 @@ class JobDetailsPage extends StatelessWidget {
                 height: 20,
               ),
               Row(
-                children: const [
+                children: [
                   Text(
                     'Education :',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 22,
                     ),
                   ),
                 ],
               ),
-              const Text(
+              Text(
                 'Bachelor of Computer Application',
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
@@ -191,10 +192,10 @@ class JobDetailsPage extends StatelessWidget {
                 height: 20,
               ),
               Row(
-                children: const [
+                children: [
                   Text(
                     'Languages :',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 22,
                     ),
@@ -203,10 +204,10 @@ class JobDetailsPage extends StatelessWidget {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [
+                children: [
                   Text(
                     'English',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -214,7 +215,7 @@ class JobDetailsPage extends StatelessWidget {
                   ),
                   Text(
                     'Malayalam',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -224,10 +225,10 @@ class JobDetailsPage extends StatelessWidget {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [
+                children: [
                   Text(
                     'Hindi',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -235,7 +236,7 @@ class JobDetailsPage extends StatelessWidget {
                   ),
                   Text(
                     'Spanish',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -247,10 +248,10 @@ class JobDetailsPage extends StatelessWidget {
                 height: 20,
               ),
               Row(
-                children: const [
+                children: [
                   Text(
                     'Skills :',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 22,
                     ),
@@ -259,10 +260,10 @@ class JobDetailsPage extends StatelessWidget {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: const [
+                children: [
                   Text(
                     'Dart',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -270,7 +271,7 @@ class JobDetailsPage extends StatelessWidget {
                   ),
                   Text(
                     'Flutter',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -278,7 +279,7 @@ class JobDetailsPage extends StatelessWidget {
                   ),
                   Text(
                     'Android',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -290,10 +291,10 @@ class JobDetailsPage extends StatelessWidget {
                 height: 20,
               ),
               Row(
-                children: const [
+                children: [
                   Text(
                     'Job Overview :',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 22,
                     ),
@@ -304,17 +305,17 @@ class JobDetailsPage extends StatelessWidget {
                 height: 20,
               ),
               Row(
-                children: const [
+                children: [
                   Text(
                     'Experience\t\t:',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 20,
                     ),
                   ),
                   Text(
                     '4 - 8 years',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 20,
                     ),
@@ -325,17 +326,17 @@ class JobDetailsPage extends StatelessWidget {
                 height: 20,
               ),
               Row(
-                children: const [
+                children: [
                   Text(
                     'Posted Date\t\t:',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 20,
                     ),
                   ),
                   Text(
                     '20-10-2021',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 20,
                     ),
@@ -346,17 +347,17 @@ class JobDetailsPage extends StatelessWidget {
                 height: 20,
               ),
               Row(
-                children: const [
+                children: [
                   Text(
                     'No. of Application\t\t:',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 20,
                     ),
                   ),
                   Text(
                     '17',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 20,
                     ),

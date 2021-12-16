@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
 
 class BuildResume extends StatefulWidget {
@@ -39,17 +40,17 @@ class _BuildResumeState extends State<BuildResume> {
         backgroundColor: const Color(0xFFF2F2F2),
         centerTitle: true,
         title: Row(
-          children: const [
+          children: [
             Text(
               'Build Your ',
-              style: TextStyle(
+              style: GoogleFonts.poppins(
                 color: Colors.black,
               ),
             ),
             Text(
               'JobsWay Resume',
-              style: TextStyle(
-                color: Color(0xFF008FAE),
+              style: GoogleFonts.poppins(
+                color: const Color(0xFF008FAE),
               ),
             ),
           ],
@@ -77,24 +78,24 @@ class _BuildResumeState extends State<BuildResume> {
                 label: 'About You',
                 textController: aboutController
               ),
-              const Text('Education',
-                style: TextStyle(
+              Text('Education',
+                style: GoogleFonts.poppins(
                     color: Colors.grey
                 ),),
               widgets.textFieldGrey(
                 label: 'Education',
                 textController: educationController
               ),
-              const Text('Skills',
-                style: TextStyle(
+              Text('Skills',
+                style: GoogleFonts.poppins(
                     color: Colors.grey
                 ),),
               widgets.textFieldGrey(
                 label: 'Skills',
                 textController: skillsController
               ),
-              const Text('Experience',
-              style: TextStyle(
+              Text('Experience',
+              style: GoogleFonts.poppins(
                 color: Colors.grey
               ),),
               Row(
@@ -119,8 +120,8 @@ class _BuildResumeState extends State<BuildResume> {
                 label: 'About',
                 textController: experienceAboutController
               ),
-              const Text('Contact Details',
-                style: TextStyle(
+               Text('Contact Details',
+                style: GoogleFonts.poppins(
                     color: Colors.grey
                 ),),
               widgets.textFieldGrey(

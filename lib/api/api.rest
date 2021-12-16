@@ -1,0 +1,26 @@
+POST
+
+https://jobsway-user.herokuapp.com/api/v1/user/verifyotp/post_json
+
+@content-type: application/json
+
+Map<String, String>
+{
+      "otp": "884866",
+      "userDetails" : {
+        "firstName": "arshad",
+        "lastName": "Sanin",
+        "password": "12345678",
+        "phone": "9746802988",
+        "email": "arshadsanin@gmail.com"
+      }
+}
+
+
+{
+        "firstName": "arshad",
+        "lastName": "Sanin",
+        "password": "12345678",
+        "phone": "9746802988",
+        "email": "arshadsanin@gmail.com"
+}

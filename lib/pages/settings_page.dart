@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:jobs_way/login_signup/sign_up.dart';
 import 'package:jobs_way/pages/add_profile_page.dart';
@@ -63,6 +64,23 @@ class SettingsPage extends StatelessWidget {
                 },
                 title: const Text('Log out'),
                 trailing: const Icon(Icons.logout),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Card(
+              elevation: 5,
+              child: ListTile(
+                onTap: () {
+
+                },
+                title: const Text('Upgrade Premium'),
+                trailing: const FaIcon(
+                  FontAwesomeIcons.crown,
+                  color: Colors.amber,
+                  size: 26.0,
+                ),
               ),
             ),
           ],

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
 
 class HomeScreenPage extends StatefulWidget {
@@ -25,14 +26,14 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
             children: [
               const SizedBox(height: 15,),
               widgets.headingTexts(
-                blackText: 'Get the',
+                blackText: 'Get the ',
                 colorText: 'Right Job',
               ),
               widgets.headingTexts(blackText: 'You Deserve'),
               const SizedBox(height: 5,),
-              const Text(
+              Text(
                 'Get new opportunity through JobsWay.',
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                     color: Colors.grey
                 ),
               ),

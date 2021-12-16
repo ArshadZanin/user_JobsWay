@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
 import 'package:jobs_way/pages/add_profile_page.dart';
 
@@ -21,10 +22,10 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.black),
         backgroundColor: const Color(0xFFF2F2F2),
-        title: const Text(
+        title: Text(
           'Profile',
-          style: TextStyle(
-            color: Color(0xFF008FAE),
+          style: GoogleFonts.poppins(
+            color: const Color(0xFF008FAE),
           ),
         ),
         elevation: 0,
@@ -67,16 +68,16 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                           ),
                         ),
-                        const Text(
+                        Text(
                           'Arshad Sanin P V',
-                          style: TextStyle(
+                          style: GoogleFonts.poppins(
                               color: Colors.black,
                               fontSize: 30,
                               fontWeight: FontWeight.bold),
                         ),
-                        const Text(
+                        Text(
                           'Flutter Developer',
-                          style: TextStyle(color: Colors.black, fontSize: 25),
+                          style: GoogleFonts.poppins(color: Colors.black, fontSize: 25),
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 100.0),
@@ -106,9 +107,9 @@ class _ProfilePageState extends State<ProfilePage> {
                             ],
                           ),
                         ),
-                        const Text(
+                        Text(
                           'Skills :',
-                          style: TextStyle(
+                          style: GoogleFonts.poppins(
                               color: Colors.black,
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
@@ -139,9 +140,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               const SizedBox(height: 20,),
-              const Text(
+              Text(
                 'Details :',
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                     color: Colors.black,
                     fontSize: 25,
                 ),
@@ -171,38 +172,38 @@ class _ProfilePageState extends State<ProfilePage> {
                 ],
               ),
               const SizedBox(height: 20,),
-              const Text(
+              Text(
                 'Experience :',
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontSize: 25,
                 ),
               ),
               const SizedBox(height: 15,),
-              const Text(
+              Text(
                 '2020 - 21',
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const Text(
+              Text(
                 'Flutter Developer',
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const Text(
+              Text(
                 'In publishing and graphic design,'
                     ' Lorem ipsum is a placeholder'
                     ' text commonly used to demonstrate'
                     ' the visual form of a document or'
                     ' a typeface without relying on'
                     ' meaningful content.',
-                style: TextStyle(
+                style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontSize: 25,
                 ),
