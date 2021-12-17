@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -21,6 +19,26 @@ class _ProfilePageState extends State<ProfilePage> {
 
   final widgets = Get.put(WidgetController());
   Uint8List? bytesImage;
+  ///profile datas
+  String firstName = '';
+  String secondName = '';
+  String jobTitle = '';
+  List<String> skills = [];
+  String location = '';
+  String email = '';
+  String phone = '';
+  String experienceYear = '';
+  String experienceJob = '';
+  String experienceDescription = '';
+  String linkedin = '';
+  String instagram = '';
+  String twitter = '';
+  String facebook = '';
+
+  bool linkedinBool = false;
+  bool instagramBool = false;
+  bool twitterBool = false;
+  bool facebookBool = false;
 
   @override
   initState() {
@@ -29,14 +47,9 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
       });
     });
+
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    bytesImage = null;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +65,20 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         elevation: 0,
         actions: [
-          IconButton(onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (_) => const AddProfilePage()));
-          }, icon: const Icon(Icons.edit))
+          IconButton(onPressed: () async {
+            await Navigator.push(context, MaterialPageRoute(builder: (_) => const AddProfilePage()));
+            await retrieveData().whenComplete(() {
+              setState(() {
+              });
+            });
+            Future.delayed(const Duration(milliseconds: 500),(){
+              retrieveData();
+              setState(() {
+
+              });
+            });
+
+          }, icon: const Icon(Icons.edit)),
         ],
       ),
       body: SingleChildScrollView(
@@ -93,40 +117,52 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                         Text(
-                          'Arshad Sanin P V',
+                          '$firstName $secondName',
                           style: GoogleFonts.poppins(
                               color: Colors.black,
                               fontSize: 30,
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          'Flutter Developer',
+                          jobTitle,
                           style: GoogleFonts.poppins(color: Colors.black, fontSize: 25),
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 100.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: const [
-                              FaIcon(
-                                FontAwesomeIcons.linkedin,
-                                color: Colors.black,
-                                size: 26.0,
+                            children: [
+                              Visibility(
+                                visible: linkedinBool,
+                                child: const FaIcon(
+                                  FontAwesomeIcons.linkedin,
+                                  color: Colors.black,
+                                  size: 26.0,
+                                ),
                               ),
-                              FaIcon(
-                                FontAwesomeIcons.instagram,
-                                color: Colors.black,
-                                size: 26.0,
+                              Visibility(
+                                visible: instagramBool,
+                                child: const FaIcon(
+                                  FontAwesomeIcons.instagram,
+                                  color: Colors.black,
+                                  size: 26.0,
+                                ),
                               ),
-                              FaIcon(
-                                FontAwesomeIcons.twitter,
-                                color: Colors.black,
-                                size: 26.0,
+                              Visibility(
+                                visible: twitterBool,
+                                child: const FaIcon(
+                                  FontAwesomeIcons.twitter,
+                                  color: Colors.black,
+                                  size: 26.0,
+                                ),
                               ),
-                              FaIcon(
-                                FontAwesomeIcons.facebook,
-                                color: Colors.black,
-                                size: 26.0,
+                              Visibility(
+                                visible: facebookBool,
+                                child: const FaIcon(
+                                  FontAwesomeIcons.facebook,
+                                  color: Colors.black,
+                                  size: 26.0,
+                                ),
                               ),
                             ],
                           ),
@@ -139,25 +175,18 @@ class _ProfilePageState extends State<ProfilePage> {
                               fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            widgets.skillText(text: 'HTML'),
-                            widgets.skillText(text: 'CSS'),
-                            widgets.skillText(text: 'FLUTTER'),
-                            widgets.skillText(text: 'JAVASCRIPT'),
-                          ],
-                        ),
-                        const SizedBox(height: 5,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            widgets.skillText(text: 'DART'),
-                            widgets.skillText(text: 'GIT'),
-                            widgets.skillText(text: 'ANDROID'),
-                            widgets.skillText(text: 'IOS'),
-                          ],
-                        ),
+                        GridView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                            gridDelegate:  const SliverGridDelegateWithMaxCrossAxisExtent(
+                                maxCrossAxisExtent: 120,
+                                childAspectRatio: 4 / 2,
+                                crossAxisSpacing: 5,
+                                mainAxisSpacing: 5),
+                            itemCount: skills.length,
+                            itemBuilder: (BuildContext ctx, index) {
+                              return widgets.skillText(text: skills[index]);
+                            }),
                       ],
                     ),
                   ),
@@ -173,26 +202,26 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 15,),
               Row(
-                children: const [
-                  Icon(Icons.location_on_outlined,color: Colors.black,),
-                  Text('Location\t: '),
-                  Text('Kerala, India'),
+                children: [
+                  const Icon(Icons.location_on_outlined,color: Colors.black,),
+                  const Text('Location\t: '),
+                  Text(location),
                 ],
               ),
               const SizedBox(height: 15,),
               Row(
-                children: const [
-                  Icon(Icons.alternate_email,color: Colors.black,),
-                  Text('Email\t: '),
-                  Text('arshadzanin786@gmail.com'),
+                children: [
+                  const Icon(Icons.alternate_email,color: Colors.black,),
+                  const Text('Email\t: '),
+                  Text(email),
                 ],
               ),
               const SizedBox(height: 15,),
               Row(
-                children: const [
-                  Icon(Icons.phone,color: Colors.black,),
-                  Text('Phone\t: '),
-                  Text('9746802988'),
+                children: [
+                  const Icon(Icons.phone,color: Colors.black,),
+                  const Text('Phone\t: '),
+                  Text(phone),
                 ],
               ),
               const SizedBox(height: 20,),
@@ -205,7 +234,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 15,),
               Text(
-                '2020 - 21',
+                experienceYear,
                 style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontSize: 25,
@@ -213,7 +242,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               Text(
-                'Flutter Developer',
+                experienceJob,
                 style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontSize: 25,
@@ -221,12 +250,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               Text(
-                'In publishing and graphic design,'
-                    ' Lorem ipsum is a placeholder'
-                    ' text commonly used to demonstrate'
-                    ' the visual form of a document or'
-                    ' a typeface without relying on'
-                    ' meaningful content.',
+                experienceDescription,
                 style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontSize: 25,
@@ -245,6 +269,85 @@ class _ProfilePageState extends State<ProfilePage> {
     final preferences = await SharedPreferences.getInstance();
     String? result = preferences.getString("image");
     bytesImage = base64Decode(result!);
+
+    String? firstNameGet = preferences.getString("firstName");
+    firstName = firstNameGet!;
+
+    if(firstNameGet == null){
+      String? name = preferences.getString("name");
+      firstName = name!;
+    }
+
+    String? secondNameGet = preferences.getString("secondName");
+    secondName = secondNameGet!;
+
+    String? jobTitleGet = preferences.getString("jobTitle");
+    jobTitle = jobTitleGet!;
+
+    String? locationGet = preferences.getString("location");
+    location = locationGet!;
+
+    String? emailGet = preferences.getString("email");
+    email = emailGet!;
+
+    String? phoneGet = preferences.getString("phone");
+    phone = phoneGet!;
+
+    String? experienceYearGet = preferences.getString("experienceYear");
+    experienceYear = experienceYearGet!;
+
+    String? experienceJobGet = preferences.getString("experienceJob");
+    experienceJob = experienceJobGet!;
+
+    String? experienceDescriptionGet = preferences.getString("experienceDescription");
+    experienceDescription = experienceDescriptionGet!;
+
+    String? linkedinGet = preferences.getString("linkedin");
+    linkedin = linkedinGet!;
+
+    String? instagramGet = preferences.getString("instagram");
+    instagram = instagramGet!;
+
+    String? twitterGet = preferences.getString("twitter");
+    twitter = twitterGet!;
+
+    String? facebookGet = preferences.getString("facebook");
+    facebook = facebookGet!;
+
+    List<String>? listSkills = preferences.getStringList("skillList");
+    skills = listSkills!;
+
+    setState(() {
+
+    });
+
+    if(linkedin != ''){
+      linkedinBool = true;
+    }else{
+      linkedinBool = false;
+    }
+
+    if(instagram != ''){
+      instagramBool = true;
+    }else{
+      instagramBool = false;
+    }
+
+    if(twitter != ''){
+      twitterBool = true;
+    }else{
+      twitterBool = false;
+    }
+
+    if(facebook != ''){
+      facebookBool = true;
+    }else{
+      facebookBool = false;
+    }
+
+    setState(() {
+
+    });
   }
 
 }

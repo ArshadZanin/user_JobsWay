@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:jobs_way/login_signup/sign_up.dart';
 import 'package:jobs_way/pages/add_profile_page.dart';
 import 'package:jobs_way/pages/build_resume.dart';
+import 'package:jobs_way/pages/choose_plan_page.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -73,13 +74,13 @@ class SettingsPage extends StatelessWidget {
               elevation: 5,
               child: ListTile(
                 onTap: () {
-
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const ChoosePlanPage()));
                 },
                 title: const Text('Upgrade Premium'),
                 trailing: const FaIcon(
                   FontAwesomeIcons.crown,
                   color: Colors.amber,
-                  size: 26.0,
+                  size: 20.0,
                 ),
               ),
             ),

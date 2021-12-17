@@ -1,5 +1,7 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jobs_way/pages/profile_page.dart';
@@ -140,11 +142,20 @@ class WidgetController extends GetxController {
               color: Colors.black,
             ),
           ),
-          Text(
-            'Way.',
-            style: GoogleFonts.poppins(
-                color:const Color(0xFF008FAE),
-              fontWeight: FontWeight.bold,
+          Badge(
+            showBadge: false,
+            badgeColor: Colors.white.withOpacity(0.6),
+            badgeContent: const FaIcon(
+              FontAwesomeIcons.crown,
+              color: Colors.amber,
+              size: 8.0,
+            ),
+            child: Text(
+              'Way.',
+              style: GoogleFonts.poppins(
+                  color:const Color(0xFF008FAE),
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -527,14 +538,47 @@ class WidgetController extends GetxController {
         color: const Color(0xFF2C2C2C),
         borderRadius: BorderRadius.circular(30),
       ),
-      child: Text(
-        text,
-        style: GoogleFonts.poppins(
-            color: Colors.white,
-        fontSize: 20),),
+      child: Center(
+        child: Text(
+          text,
+          overflow: TextOverflow.fade,
+          style: GoogleFonts.poppins(
+              color: Colors.white,
+         ),),
+      ),
     );
   }
 
+  Widget textWidget({
+    required String text,
+    double size = 20.0,
+    Color color = Colors.black,
+    bool bold = false,
+    EdgeInsetsGeometry padding = const EdgeInsets.all(8.0),
+  }){
+    return Padding(
+      padding: padding,
+      child: Text(
+        text,
+        style: GoogleFonts.poppins(
+            color: color,
+            fontWeight: bold == true ? FontWeight.bold : null,
+            fontSize: size
+        ),
+      ),
+    );
+  }
 
+  Widget greenButton({required Function() onPress, required String label}) {
+    return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(
+          const Color(0xFF03C852),
+        ),
+      ),
+      onPressed: onPress,
+      child: Text(label),
+    );
+  }
 
 }

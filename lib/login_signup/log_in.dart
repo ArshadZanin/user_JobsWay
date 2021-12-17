@@ -113,7 +113,9 @@ class LogIn extends StatelessWidget {
   }
 
   Future signIn(BuildContext context) async {
+    print('Started');
     final user = await GoogleSignInApi.login();
+    print('user get');
 
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -125,6 +127,8 @@ class LogIn extends StatelessWidget {
         id: user.id,
         name: user.displayName!,
       );
+      print('data send');
+
 
       if(details!.token != null){
         bool ban = details.user!.ban == false ? false : true;
