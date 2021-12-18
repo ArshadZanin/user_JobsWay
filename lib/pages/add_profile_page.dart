@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
 import 'package:jobs_way/image_pick/utils.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -55,6 +57,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
   final instagramController = TextEditingController();
   final twitterController = TextEditingController();
   final facebookController = TextEditingController();
+  final resumeController = TextEditingController();
 
   @override
   initState() {
@@ -155,14 +158,10 @@ class _AddProfilePageState extends State<AddProfilePage> {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 10,
-              ),
+
               widgets.textFieldGrey(
                   label: 'Job Title', textController: jobTitleController),
-              const SizedBox(
-                height: 10,
-              ),
+
               Row(
                 children: [
                   Expanded(
@@ -195,60 +194,77 @@ class _AddProfilePageState extends State<AddProfilePage> {
                           skills.removeAt(index);
                           setState(() {});
                         },
-                          child: Center(child: Text(skills[index])),);
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                              )
+                            ),
+                            child: Center(
+                                child: Text(skills[index]),
+                            ),
+                          ),
+                      );
                     }),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+
               widgets.textFieldGrey(
                   label: 'Location', textController: locationController),
-              const SizedBox(
-                height: 10,
-              ),
+
               widgets.textFieldGrey(
                   label: 'Email', textController: emailController),
-              const SizedBox(
-                height: 10,
-              ),
+
               widgets.textFieldGrey(
                   label: 'Phone', textController: phoneController),
-              const SizedBox(
-                height: 10,
-              ),
+
               widgets.textFieldGrey(
                   label: 'Experience Year', textController: experienceYearController),
               widgets.textFieldGrey(
                   label: 'Experienced Job Title', textController: experienceJobController),
               widgets.textFieldGrey(
-                  label: 'About Job', textController: experienceAboutController),
-              const SizedBox(
-                height: 10,
+                  label: 'About Job',
+                textController: experienceAboutController,
+                maxLines: 5
               ),
+
               widgets.textFieldGrey(
                   label: 'LinkedIn Link', textController: linkedInController),
-              const SizedBox(
-                height: 10,
-              ),
+
               widgets.textFieldGrey(
                   label: 'Instagram Link', textController: instagramController),
-              const SizedBox(
-                height: 10,
-              ),
+
               widgets.textFieldGrey(
                   label: 'Twitter Link', textController: twitterController),
-              const SizedBox(
-                height: 10,
-              ),
+
               widgets.textFieldGrey(
                   label: 'Facebook Link', textController: facebookController),
-              const SizedBox(
-                height: 10,
-              ),
-              InkWell(
-                child: widgets.textFieldGrey(
-                  label: 'Upload Resume',
-                ),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: widgets.textFieldGrey(
+                      textController: resumeController,
+                      readOnly: true,
+                      label: 'Upload Resume',
+                    ),
+                  ),
+                  IconButton(icon: const Icon(Icons.upload),
+                    onPressed: () async {
+                      final result = await FilePicker.platform.pickFiles(
+                        type: FileType.custom,
+                        allowedExtensions: ['pdf'],
+                      );
+                      if(result == null) return;
+                      ///open this file
+                      final file = result.files.first;
+                      // final newFile = await saveFilePermanently(file);
+
+
+                      setState(() {
+                        resumeController.text = file.name;
+                      });
+                      print(file.name);
+                    },),
+                ],
               ),
               const SizedBox(
                 height: 15,
@@ -289,6 +305,18 @@ class _AddProfilePageState extends State<AddProfilePage> {
       ),
     );
   }
+
+  // void openFile(PlatformFile file) async {
+  //   OpenFile.open(file.path);
+  //
+  //   final newFile = await saveFilePermanently(file);
+  // }
+
+  // Future<File> saveFilePermanently(PlatformFile file) async {
+  //   final appStorage = await getApplicationDocumentsDirectory();
+  //   final newFile = File('${appStorage.path}/${file.name}');
+  //   return File(file.path!).copy(newFile.path);
+  // }
 
   Future<File?> cropSquareImage(File imageFile) async =>
       await ImageCropper.cropImage(

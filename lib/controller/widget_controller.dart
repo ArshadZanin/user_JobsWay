@@ -83,7 +83,7 @@ class WidgetController extends GetxController {
   }
 
   Widget textFieldGrey(
-      {String label = '', TextEditingController? textController}) {
+      {String label = '', TextEditingController? textController, bool readOnly = false, int maxLines = 1}) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 3),
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -92,7 +92,9 @@ class WidgetController extends GetxController {
         color: const Color(0xFFE6E6E6),
       ),
       child: TextFormField(
+        readOnly: readOnly,
         controller: textController,
+        maxLines: maxLines,
         decoration: InputDecoration(
           border: InputBorder.none,
           focusedBorder: InputBorder.none,

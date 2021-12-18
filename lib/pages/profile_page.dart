@@ -203,25 +203,33 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 15,),
               Row(
                 children: [
-                  const Icon(Icons.location_on_outlined,color: Colors.black,),
-                  const Text('Location\t: '),
-                  Text(location),
+                  const Icon(Icons.location_on_outlined,color: Colors.black,size: 24,),
+                  const Text('\t\tLocation\t\t\t: ',
+                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),),
+                  Expanded(child: Text(location,
+                    style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 15),)),
                 ],
               ),
               const SizedBox(height: 15,),
               Row(
                 children: [
-                  const Icon(Icons.alternate_email,color: Colors.black,),
-                  const Text('Email\t: '),
-                  Text(email),
+                  const Icon(Icons.alternate_email_outlined,color: Colors.black,size: 22,),
+                  const Text(
+                      '\t\tEmail\t\t\t\t\t\t\t\t\t\t: ',
+                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                  ),
+                  Expanded(child: Text(email,
+                    style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 15),)),
                 ],
               ),
               const SizedBox(height: 15,),
               Row(
                 children: [
-                  const Icon(Icons.phone,color: Colors.black,),
-                  const Text('Phone\t: '),
-                  Text(phone),
+                  const Icon(Icons.phone_outlined,color: Colors.black,size: 22,),
+                  const Text('\t\tPhone\t\t\t\t\t\t\t\t: ',
+                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),),
+                  Expanded(child: Text(phone,
+                    style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 15),)),
                 ],
               ),
               const SizedBox(height: 20,),
@@ -249,14 +257,17 @@ class _ProfilePageState extends State<ProfilePage> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(
-                experienceDescription,
-                style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontSize: 25,
-                ),
-                textAlign: TextAlign.justify,
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  experienceDescription,
+                  style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: 20,
+                  ),
+                  textAlign: TextAlign.justify,
 
+                ),
               ),
             ],
           ),
