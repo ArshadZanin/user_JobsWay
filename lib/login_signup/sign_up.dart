@@ -306,7 +306,7 @@ class _SignUpState extends State<SignUp> {
     required bool ban,
   }) async{
     final preferences = await SharedPreferences.getInstance();
-    await preferences.setString("name", name);
+    await preferences.setString("firstName", name);
     await preferences.setString("email", email);
     await preferences.setString("id", id);
     await preferences.setString("password", password);

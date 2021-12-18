@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:jobs_way/login_signup/log_in.dart';
 import 'package:jobs_way/login_signup/sign_up.dart';
 import 'package:jobs_way/pages/add_profile_page.dart';
 import 'package:jobs_way/pages/build_resume.dart';
 import 'package:jobs_way/pages/choose_plan_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -55,13 +57,13 @@ class SettingsPage extends StatelessWidget {
             Card(
               elevation: 5,
               child: ListTile(
-                onTap: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => SignUp(),
-                    ),
-                  );
+                onTap: () async {
+                  final preferences = await SharedPreferences.getInstance();
+                  print("clearing started");
+                  await preferences.clear();
+                  print("clearing ended");
+
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LogIn()));
                 },
                 title: const Text('Log out'),
                 trailing: const Icon(Icons.logout),
@@ -89,4 +91,5 @@ class SettingsPage extends StatelessWidget {
       ),
     );
   }
+
 }

@@ -42,13 +42,13 @@ class _OtpPageState extends State<OtpPage> {
   }) async {
 
     final jsonMap = {
-      "otp": otp,
+      "otp" : otp,
       "userDetails" : {
-        "firstName": firstName,
-        "lastName": secondName,
-        "password": password,
-        "phone": phone,
-        "email": email
+        "firstName" : firstName,
+        "lastName" : secondName,
+        "password" : password,
+        "phone" : phone,
+        "email" : email
       }
     };
     // var jsonMap = {
@@ -70,6 +70,8 @@ class _OtpPageState extends State<OtpPage> {
 
     if(response.statusCode == 200){
       final String responseString = response.body;
+
+      print(responseString);
 
       return userModelOtpFromJson(responseString);
     }else{

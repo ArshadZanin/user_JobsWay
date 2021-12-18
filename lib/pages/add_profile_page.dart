@@ -63,13 +63,22 @@ class _AddProfilePageState extends State<AddProfilePage> {
   initState() {
     super.initState();
     retrieveData().whenComplete(() async {
-      Directory tempDir = await getTemporaryDirectory();
-      var tempPath = tempDir.path;
-      // await File('$tempPath/profile.png').delete();
-      File file = File('$tempPath/profile${widgets.i}.png');
-      await file.writeAsBytes(bytesImage!.buffer
-          .asUint8List(bytesImage!.offsetInBytes, bytesImage!.lengthInBytes));
-      image = file;
+
+      if(bytesImage != null){
+        Directory tempDir = await getTemporaryDirectory();
+        var tempPath = tempDir.path;
+        // await File('$tempPath/profile.png').delete();
+        File file = File('$tempPath/profile${widgets.i}.png');
+        await file.writeAsBytes(bytesImage!.buffer
+            .asUint8List(bytesImage!.offsetInBytes, bytesImage!.lengthInBytes));
+        image = file;
+      }
+
+      if(secondName.isEmpty){
+        List<String> name = firstName.split(' ');
+        firstName = name[0];
+        secondName = name[1];
+      }
 
 
       firstNameController.text = firstName;
@@ -350,54 +359,55 @@ class _AddProfilePageState extends State<AddProfilePage> {
   Future<void> retrieveData() async{
     final preferences = await SharedPreferences.getInstance();
     String? result = preferences.getString("image");
-    bytesImage = base64Decode(result!);
-
-    String? firstNameGet = preferences.getString("firstName");
-    firstName = firstNameGet!;
-
-    if(firstNameGet == null){
-      String? name = preferences.getString("name");
-      firstName = name!;
+    if(result != null){
+      bytesImage = base64Decode(result);
     }
 
+
+    String? firstNameGet = preferences.getString("firstName");
+    firstName = firstNameGet ?? '';
+
     String? secondNameGet = preferences.getString("secondName");
-    secondName = secondNameGet!;
+    secondName = secondNameGet ?? '';
 
     String? jobTitleGet = preferences.getString("jobTitle");
-    jobTitle = jobTitleGet!;
+    jobTitle = jobTitleGet ?? '';
 
     String? locationGet = preferences.getString("location");
-    location = locationGet!;
+    location = locationGet ?? '';
 
     String? emailGet = preferences.getString("email");
-    email = emailGet!;
+    email = emailGet ?? '';
 
     String? phoneGet = preferences.getString("phone");
-    phone = phoneGet!;
+    phone = phoneGet ?? '';
 
     String? experienceYearGet = preferences.getString("experienceYear");
-    experienceYear = experienceYearGet!;
+    experienceYear = experienceYearGet ?? '';
 
     String? experienceJobGet = preferences.getString("experienceJob");
-    experienceJob = experienceJobGet!;
+    experienceJob = experienceJobGet ?? '';
 
     String? experienceDescriptionGet = preferences.getString("experienceDescription");
-    experienceDescription = experienceDescriptionGet!;
+    experienceDescription = experienceDescriptionGet ?? '';
 
     String? linkedinGet = preferences.getString("linkedin");
-    linkedin = linkedinGet!;
+    linkedin = linkedinGet ?? '';
 
     String? instagramGet = preferences.getString("instagram");
-    instagram = instagramGet!;
+    instagram = instagramGet ?? '';
 
     String? twitterGet = preferences.getString("twitter");
-    twitter = twitterGet!;
+    twitter = twitterGet ?? '';
 
     String? facebookGet = preferences.getString("facebook");
-    facebook = facebookGet!;
+    facebook = facebookGet ?? '';
 
     List<String>? listSkills = preferences.getStringList("skillList");
-    skills = listSkills!;
+    if(listSkills != null){
+      skills = listSkills;
+    }
+
 
     setState(() {
 
