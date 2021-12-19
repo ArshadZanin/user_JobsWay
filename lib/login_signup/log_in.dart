@@ -95,12 +95,7 @@ class _LogInState extends State<LogIn> {
                                 phone: emailOrUserNameController.text,
                                 password: passwordController.text
                             );
-                            if (user!.user.id != null) {
-                              print(user.user.name);
-                              print(user.user.password);
-                              print(user.user.id);
-                              print(user.user.email);
-                              print(user.user.phone);
+                            if (user != null) {
                               await initializePreference(
                                 name: user.user.name,
                                 password: user.user.password,
