@@ -13,6 +13,7 @@ import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class OtpPage extends StatefulWidget {
@@ -164,6 +165,10 @@ class _OtpPageState extends State<OtpPage> {
 
                       print(userDetails!.user.name);
                       if(userDetails != null){
+
+                        final preferences = await SharedPreferences.getInstance();
+                        await preferences.setString("login", 'login');
+
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

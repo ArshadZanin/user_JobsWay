@@ -212,7 +212,7 @@ class _SignUpState extends State<SignUp> {
                                       onPress: () {
                                         debugPrint("Sign in");
                                         Navigator.pushReplacement(
-                                            context, MaterialPageRoute(builder: (_) => LogIn()));
+                                            context, MaterialPageRoute(builder: (_) => const LogIn()));
                                       },
                                     ),
                                   ],
@@ -306,6 +306,7 @@ class _SignUpState extends State<SignUp> {
     required bool ban,
   }) async{
     final preferences = await SharedPreferences.getInstance();
+    await preferences.setString("login", 'login');
     await preferences.setString("firstName", name);
     await preferences.setString("email", email);
     await preferences.setString("id", id);

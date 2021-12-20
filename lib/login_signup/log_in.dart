@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -31,18 +33,32 @@ class _LogInState extends State<LogIn> {
     required String password,
     required String phone,
   }) async {
-    const String apiUrl = 'https://jobsway-user.herokuapp.com/api/v1/user/signin';
-    final response = await http.post(Uri.parse(apiUrl), body:{
-      "phone": phone,
-      "password": password,
-    });
+    try{
+      const String apiUrl = 'https://jobsway-user.herokuapp.com/api/v1/user/signin';
+      final response = await http.post(Uri.parse(apiUrl), body:{
+        "phone": phone,
+        "password": password,
+      });
 
-    if(response.statusCode == 200){
-      final String responseString = response.body;
+      if(response.statusCode == 200){
+        final String responseString = response.body;
 
-      return userModelOtpFromJson(responseString);
-    }else{
-      return null;
+        return userModelOtpFromJson(responseString);
+      }else{
+        return null;
+      }
+    }on SocketException {
+      Get.snackbar(
+          'Something went Wrong!',
+          'Check network connection',
+          icon: const Icon(Icons.network_check_outlined));
+    }on TimeoutException catch (e) {
+      Get.snackbar(
+        'Something went Wrong!',
+        'Time out try again',
+      );
+    } on Error catch (e) {
+      print('Error: $e');
     }
 
   }
@@ -251,6 +267,7 @@ class _LogInState extends State<LogIn> {
     String phone = '',
   }) async{
     final preferences = await SharedPreferences.getInstance();
+    await preferences.setString("login", 'login');
     await preferences.setString("firstName", name);
     await preferences.setString("email", email);
     await preferences.setString("phone", phone);

@@ -13,12 +13,12 @@ void main() {
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
-  var id = '';
+  var login = '';
 
   Future<void> retrieveData() async{
     final preferences = await SharedPreferences.getInstance();
-    String? idGet = preferences.getString("id");
-    id = idGet!;
+    String? loginGet = preferences.getString("login");
+    login = loginGet!;
   }
 
   @override
@@ -30,9 +30,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: createMaterialColor(const Color(0xFF004756)),
       ),
-      home: id == '' ?
-      const LogIn() :
-      HomePage(),
+      home: login == 'login' ?
+      HomePage() :
+      const LogIn(),
     );
   }
 
