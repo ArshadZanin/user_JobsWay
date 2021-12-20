@@ -1,38 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:jobs_way/login_signup/log_in.dart';
-import 'package:jobs_way/pages/home_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jobs_way/pages/checking_page.dart';
 
-import 'login_signup/sign_up.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
-
-  var login = '';
-
-  Future<void> retrieveData() async{
-    final preferences = await SharedPreferences.getInstance();
-    String? loginGet = preferences.getString("login");
-    login = loginGet!;
-  }
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    retrieveData();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'jobs way app',
       theme: ThemeData(
         primarySwatch: createMaterialColor(const Color(0xFF004756)),
       ),
-      home: login == 'login' ?
-      HomePage() :
-      const LogIn(),
+      home: const CheckingPage(),
     );
   }
 

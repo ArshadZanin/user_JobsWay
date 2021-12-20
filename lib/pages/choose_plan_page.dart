@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
 import 'package:jobs_way/pages/home_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChoosePlanPage extends StatefulWidget {
   const ChoosePlanPage({Key? key}) : super(key: key);
@@ -118,7 +119,11 @@ class _ChoosePlanPageState extends State<ChoosePlanPage> {
               ),
             ),
             ListTile(
-              onTap: (){
+              onTap: () async {
+                final preferences = await SharedPreferences.getInstance();
+                await preferences.setString("premium", "normal");
+                widgets.premiumDeactivate();
+                
                 // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => ResultPage(),),);
                 Navigator.pop(context);
               },
@@ -297,7 +302,10 @@ class _ChoosePlanPageState extends State<ChoosePlanPage> {
               ),
             ),
             ListTile(
-              onTap: (){
+              onTap: () async {
+                final preferences = await SharedPreferences.getInstance();
+                await preferences.setString("premium", "premium");
+                widgets.premiumActivate();
                 // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomePage(),),);
                 Navigator.pop(context);
               },

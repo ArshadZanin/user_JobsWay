@@ -8,6 +8,17 @@ import 'package:jobs_way/pages/profile_page.dart';
 
 class WidgetController extends GetxController {
 
+
+  RxBool premium = false.obs;
+
+
+  void premiumActivate(){
+    premium.value = true;
+  }
+  void premiumDeactivate(){
+    premium.value = false;
+  }
+
   var i = 1.obs;
   void increment(){
     i.value++;
@@ -145,12 +156,13 @@ class WidgetController extends GetxController {
             ),
           ),
           Badge(
-            showBadge: false,
-            badgeColor: Colors.white.withOpacity(0.6),
+            elevation: 0,
+            showBadge: premium.value,
+            badgeColor: Colors.transparent,
             badgeContent: const FaIcon(
               FontAwesomeIcons.crown,
               color: Colors.amber,
-              size: 8.0,
+              size: 12.0,
             ),
             child: Text(
               'Way.',

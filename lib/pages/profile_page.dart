@@ -179,8 +179,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                             gridDelegate:  const SliverGridDelegateWithMaxCrossAxisExtent(
-                                maxCrossAxisExtent: 120,
-                                childAspectRatio: 4 / 2,
+                                maxCrossAxisExtent: 100,
+                                childAspectRatio: 2,
                                 crossAxisSpacing: 5,
                                 mainAxisSpacing: 5),
                             itemCount: skills.length,

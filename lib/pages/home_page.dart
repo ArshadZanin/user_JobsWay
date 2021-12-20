@@ -24,53 +24,55 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 4,
-      child: Scaffold(
-        appBar: widgets.appbarCustom(context),
-        body: TabBarView(
-          children: <Widget>[
-            const HomeScreenPage(),
-            FeaturedJobsPage(),
-            const MyJobsPage(),
-            const SettingsPage(),
-          ],
-        ),
-        bottomNavigationBar: Material(
-          color: const Color(0xFFF2F2F2),
-          child: TabBar(
-              indicatorColor: Colors.transparent,
-              unselectedLabelColor: Colors.grey,
-              labelColor: const Color(0xFF008FAE),
-              tabs: <Widget>[
-                const Tab(
-                  icon: Icon(
-                    Icons.home,
-                    size: 28,
-                  ),
-                ),
-                const Tab(
-                  icon: Icon(
-                    Icons.add_to_photos_rounded,
-                    size: 28,
-                  ),
-                ),
-                Tab(
-                  icon: Badge(
-                    showBadge: false,
-                    child:const Icon(
-                      Icons.notifications_on_outlined,
+      child: Obx(() {
+        return Scaffold(
+          appBar: widgets.appbarCustom(context),
+          body: TabBarView(
+            children: <Widget>[
+              const HomeScreenPage(),
+              FeaturedJobsPage(),
+              const MyJobsPage(),
+              const SettingsPage(),
+            ],
+          ),
+          bottomNavigationBar: Material(
+            color: const Color(0xFFF2F2F2),
+            child: TabBar(
+                indicatorColor: Colors.transparent,
+                unselectedLabelColor: Colors.grey,
+                labelColor: const Color(0xFF008FAE),
+                tabs: <Widget>[
+                  const Tab(
+                    icon: Icon(
+                      Icons.home,
                       size: 28,
                     ),
                   ),
-                ),
-                const Tab(
-                  icon: Icon(
-                    Icons.settings,
-                    size: 28,
+                  const Tab(
+                    icon: Icon(
+                      Icons.add_to_photos_rounded,
+                      size: 28,
+                    ),
                   ),
-                ),
-              ]),
-        ),
-      ),
+                  Tab(
+                    icon: Badge(
+                      showBadge: false,
+                      child: const Icon(
+                        Icons.notifications_on_outlined,
+                        size: 28,
+                      ),
+                    ),
+                  ),
+                  const Tab(
+                    icon: Icon(
+                      Icons.settings,
+                      size: 28,
+                    ),
+                  ),
+                ]),
+          ),
+        );
+      }),
     );
   }
 }
