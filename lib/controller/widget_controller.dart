@@ -5,22 +5,21 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jobs_way/pages/profile_page.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 
 class WidgetController extends GetxController {
-
-
   RxBool premium = false.obs;
 
-
-  void premiumActivate(){
+  void premiumActivate() {
     premium.value = true;
   }
-  void premiumDeactivate(){
+
+  void premiumDeactivate() {
     premium.value = false;
   }
 
   var i = 1.obs;
-  void increment(){
+  void increment() {
     i.value++;
   }
 
@@ -93,8 +92,14 @@ class WidgetController extends GetxController {
     );
   }
 
-  Widget textFieldGrey(
-      {String label = '', TextEditingController? textController, bool readOnly = false, int maxLines = 1}) {
+  Widget textFieldGrey({
+    String label = '',
+    TextEditingController? textController,
+    bool readOnly = false,
+    int maxLines = 1,
+    TextInputType keyboardType = TextInputType.text,
+    bool obscure = false,
+  }) {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 3),
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -103,6 +108,8 @@ class WidgetController extends GetxController {
         color: const Color(0xFFE6E6E6),
       ),
       child: TextFormField(
+        obscureText: obscure,
+        keyboardType: keyboardType,
         readOnly: readOnly,
         controller: textController,
         maxLines: maxLines,
@@ -121,6 +128,59 @@ class WidgetController extends GetxController {
     );
   }
 
+  Widget textFieldGreyObscure({
+    String label = '',
+    TextEditingController? textController,
+    bool readOnly = false,
+    int maxLines = 1,
+    TextInputType keyboardType = TextInputType.text,
+    required bool obscure,
+    required Function() onPress,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: const Color(0xFFE6E6E6),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextFormField(
+              obscureText: obscure,
+              keyboardType: keyboardType,
+              readOnly: readOnly,
+              controller: textController,
+              maxLines: maxLines,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                labelText: label,
+                labelStyle: GoogleFonts.poppins(
+                  color: const Color(0xffAEAEAE),
+                ),
+              ),
+            ),
+          ),
+          Center(
+            child: IconButton(
+              onPressed: onPress,
+              icon: Icon(
+                obscure ? Icons.visibility_off : Icons.visibility,
+                color: Colors.grey,
+                size: 20,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget textColorButton({
     required String text,
     required Function() onPress,
@@ -133,6 +193,31 @@ class WidgetController extends GetxController {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Text(
+          text,
+          style: GoogleFonts.poppins(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget textColorButtonCircle({
+    required String text,
+    required Function() onPress,
+    required bool isLoading,
+  }) {
+    return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(const Color(0xFF008FAE)),
+      ),
+      onPressed: onPress,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: isLoading ?
+        const SizedBox(
+          height: 25,
+          width: 25,
+          child: CircularProgressIndicator(color: Colors.white,strokeWidth: 1,),) :
+        Text(
           text,
           style: GoogleFonts.poppins(color: Colors.white),
         ),
@@ -167,7 +252,7 @@ class WidgetController extends GetxController {
             child: Text(
               'Way.',
               style: GoogleFonts.poppins(
-                  color:const Color(0xFF008FAE),
+                color: const Color(0xFF008FAE),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -177,10 +262,8 @@ class WidgetController extends GetxController {
       actions: [
         IconButton(
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => const ProfilePage()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const ProfilePage()));
             },
             icon: const Icon(
               Icons.account_circle_outlined,
@@ -216,8 +299,8 @@ class WidgetController extends GetxController {
                       flex: 1,
                       child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 10),
-                        padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
@@ -322,7 +405,6 @@ class WidgetController extends GetxController {
                     ),
                   ],
                 ),
-
               ],
             ),
           ],
@@ -331,7 +413,10 @@ class WidgetController extends GetxController {
     );
   }
 
-  Widget iconTextButton({required IconData icon, required String text, required Function() onPress}){
+  Widget iconTextButton(
+      {required IconData icon,
+      required String text,
+      required Function() onPress}) {
     return TextButton(
       onPressed: onPress,
       child: Column(
@@ -341,19 +426,21 @@ class WidgetController extends GetxController {
             color: const Color(0xff000000),
             size: 50,
           ),
-          Text(text,style: GoogleFonts.poppins(color: const Color(0xff000000)),),//0xff008080
+          Text(
+            text,
+            style: GoogleFonts.poppins(color: const Color(0xff000000)),
+          ), //0xff008080
         ],
       ),
     );
   }
 
   Widget completeTaskCard({
-  required Function() onPress,
+    required Function() onPress,
     required String srcImage,
     required String companyName,
     String? companyLocation,
-
-}){
+  }) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Card(
@@ -372,8 +459,8 @@ class WidgetController extends GetxController {
                   child: Row(
                     children: [
                       Container(
-                        padding:
-                        const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 20),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10),
@@ -437,9 +524,7 @@ class WidgetController extends GetxController {
                   padding: const EdgeInsets.all(16.0),
                   child: Center(
                       child: textColorButton(
-                          text: 'Start Task',
-                          onPress: onPress)
-                  ),
+                          text: 'Start Task', onPress: onPress)),
                 ),
               ],
             ),
@@ -449,7 +534,7 @@ class WidgetController extends GetxController {
     );
   }
 
-  Widget pendingField(Function()? onPress){
+  Widget pendingField(Function()? onPress) {
     return ElevatedButton(
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(const Color(0xFFFFE39C)),
@@ -464,7 +549,8 @@ class WidgetController extends GetxController {
       ),
     );
   }
-  Widget approvedField(Function()? onPress){
+
+  Widget approvedField(Function()? onPress) {
     return ElevatedButton(
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(const Color(0xFF03C852)),
@@ -479,7 +565,8 @@ class WidgetController extends GetxController {
       ),
     );
   }
-  Widget rejectField(Function()? onPress){
+
+  Widget rejectField(Function()? onPress) {
     return ElevatedButton(
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(const Color(0xFFFF4E4E)),
@@ -496,11 +583,11 @@ class WidgetController extends GetxController {
   }
 
   Widget jobDetailsCard({
-  required Widget statusWidget,
+    required Widget statusWidget,
     required String srcImage,
     required String jobName,
     String jobLocation = '',
-}){
+  }) {
     return Card(
       color: const Color(0xFF2C2C2C),
       shape: RoundedRectangleBorder(
@@ -509,8 +596,7 @@ class WidgetController extends GetxController {
       child: ListTile(
         leading: Container(
           width: 53,
-          padding:
-          const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
@@ -529,8 +615,8 @@ class WidgetController extends GetxController {
         title: Text(
           jobName,
           style: GoogleFonts.poppins(
-              color: Colors.white,
-              fontSize: 14,
+            color: Colors.white,
+            fontSize: 14,
           ),
         ),
         subtitle: Text(
@@ -545,7 +631,7 @@ class WidgetController extends GetxController {
     );
   }
 
-  Widget skillText({required String text}){
+  Widget skillText({required String text}) {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -557,8 +643,9 @@ class WidgetController extends GetxController {
           text,
           overflow: TextOverflow.fade,
           style: GoogleFonts.poppins(
-              color: Colors.white,
-         ),),
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }
@@ -569,7 +656,7 @@ class WidgetController extends GetxController {
     Color color = Colors.black,
     bool bold = false,
     EdgeInsetsGeometry padding = const EdgeInsets.all(8.0),
-  }){
+  }) {
     return Padding(
       padding: padding,
       child: Text(
@@ -577,8 +664,7 @@ class WidgetController extends GetxController {
         style: GoogleFonts.poppins(
             color: color,
             fontWeight: bold == true ? FontWeight.bold : null,
-            fontSize: size
-        ),
+            fontSize: size),
       ),
     );
   }
@@ -595,4 +681,41 @@ class WidgetController extends GetxController {
     );
   }
 
+  Widget otpField({void Function(String)? onCompleted, BuildContext? context}) {
+    final otpController = TextEditingController();
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 28.0),
+      child: PinCodeTextField(
+        keyboardType: TextInputType.number,
+        length: 6,
+        obscureText: false,
+        animationType: AnimationType.fade,
+        pinTheme: PinTheme(
+          inactiveFillColor: Colors.white,
+          inactiveColor: const Color(0xFF008FAE),
+          activeColor: const Color(0xFF008FAE),
+          selectedFillColor: Colors.white,
+          selectedColor: Colors.black,
+          shape: PinCodeFieldShape.box,
+          borderRadius: BorderRadius.circular(5),
+          fieldHeight: 50,
+          fieldWidth: 40,
+          activeFillColor: Colors.white,
+        ),
+        animationDuration: const Duration(milliseconds: 300),
+        enableActiveFill: true,
+        // errorAnimationController: errorController,
+        controller: otpController,
+        onCompleted: onCompleted,
+        onChanged: (value) {
+          print(value);
+        },
+        beforeTextPaste: (text) {
+          print("Allowing to paste $text");
+          return true;
+        },
+        appContext: context!,
+      ),
+    );
+  }
 }

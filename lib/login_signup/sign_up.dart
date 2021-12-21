@@ -1,5 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -34,6 +35,9 @@ class _SignUpState extends State<SignUp> {
   final passwordController = TextEditingController();
   final codeController = TextEditingController();
 
+  bool _isObscurePassword = true;
+  bool _isLoading = false;
+
   Future<UserModel?> createUser({
   required String firstName,
   required String secondName,
@@ -41,23 +45,43 @@ class _SignUpState extends State<SignUp> {
   required String phone,
   required String email,
   }) async {
-    const String apiUrl = 'https://jobsway-user.herokuapp.com/api/v1/user/signup';
-    final response = await http.post(Uri.parse(apiUrl), body:{
-      "firstName": firstName,
-      "lastName": secondName,
-      "password": password,
-      "phone": phone,
-      "email": email
-    });
+    try{
+      const String apiUrl =
+          'https://jobsway-user.herokuapp.com/api/v1/user/signup';
+      final response = await http.post(Uri.parse(apiUrl), body: {
+        "firstName": firstName,
+        "lastName": secondName,
+        "password": password,
+        "phone": phone,
+        "email": email
+      });
 
-    if(response.statusCode == 200){
-      final String responseString = response.body;
+      if (response.statusCode == 200) {
+        final String responseString = response.body;
 
-      return userModelFromJson(responseString);
-    }else{
-      return null;
+        return userModelFromJson(responseString);
+      } else {
+        final result = jsonDecode(response.body);
+        if (result['error'] != null) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('${result['error']}',textAlign: TextAlign.center,),
+          ));
+        }
+        return null;
+      }
+    }on SocketException {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Check network connection',textAlign: TextAlign.center,),
+      ));
+    } on TimeoutException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('$e',textAlign: TextAlign.center,),
+      ));
+    } on Error catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('$e',textAlign: TextAlign.center,),
+      ));
     }
-
   }
 
   @Deprecated('message')
@@ -117,9 +141,18 @@ class _SignUpState extends State<SignUp> {
                                   label: 'Phone',
                                   textController: phoneController,
                                 ),
-                                widgets.textFieldGrey(
+                                widgets.textFieldGreyObscure(
                                   label: 'Password',
                                   textController: passwordController,
+                                  onPress: () {
+                                    _isObscurePassword ?
+                                    _isObscurePassword = false :
+                                    _isObscurePassword = true;
+                                    setState(() {
+
+                                    });
+                                  },
+                                  obscure: _isObscurePassword,
                                 ),
                               ],
                             ),
@@ -137,9 +170,11 @@ class _SignUpState extends State<SignUp> {
                               child: SizedBox(
                                 child: Column(
                                   children: [
-                                    widgets.textColorButton(
+                                    widgets.textColorButtonCircle(
                                         text: 'Sign Up',
                                         onPress: () async {
+
+                                          _isLoading = true;
 
                                           final firstName = firstNameController.text;
                                           final secondName = secondNameController.text;
@@ -159,8 +194,13 @@ class _SignUpState extends State<SignUp> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (_) => OtpPage(user: user)));
+                                          }else{
+                                            _isLoading = false;
+                                            setState(() {
+
+                                            });
                                           }
-                                        }),
+                                        }, isLoading: _isLoading),
                                     const SizedBox(
                                       height: 5,
                                     ),

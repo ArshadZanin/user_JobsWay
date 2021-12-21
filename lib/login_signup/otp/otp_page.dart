@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -9,8 +10,6 @@ import 'package:jobs_way/controller/widget_controller.dart';
 import 'package:jobs_way/model/otp_signup_model.dart';
 import 'package:jobs_way/model/signup_model.dart';
 import 'package:jobs_way/pages/home_page.dart';
-import 'package:otp_text_field/otp_field.dart';
-import 'package:otp_text_field/style.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -52,31 +51,42 @@ class _OtpPageState extends State<OtpPage> {
         "email" : email
       }
     };
-    // var jsonMap = {
-    //   "email": "peter@klaven",
-    //   "password": "cityslicka"
-    // };
-
     String jsonData = jsonEncode(jsonMap);
-    print(jsonData);
+    try{
 
-    const String apiUrl = 'https://jobsway-user.herokuapp.com/api/v1/user/verifyotp';
-    // const String apiUrl = 'https://reqres.in/api/login';
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      body: jsonData,
-      headers: {"Content-Type": "application/json"},
-    );
-    print('StatusCode: ${response.statusCode}');
+      const String apiUrl =
+          'https://jobsway-user.herokuapp.com/api/v1/user/verifyotp';
+      // const String apiUrl = 'https://reqres.in/api/login';
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        body: jsonData,
+        headers: {"Content-Type": "application/json"},
+      );
 
-    if(response.statusCode == 200){
-      final String responseString = response.body;
-
-      print(responseString);
-
-      return userModelOtpFromJson(responseString);
-    }else{
-      return null;
+      if (response.statusCode == 200) {
+        final String responseString = response.body;
+        return userModelOtpFromJson(responseString);
+      } else {
+        final result = jsonDecode(response.body);
+        if (result['error'] != null) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('${result['error']}',textAlign: TextAlign.center,),
+          ));
+        }
+        return null;
+      }
+    }on SocketException {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Check network connection',textAlign: TextAlign.center,),
+      ));
+    } on TimeoutException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('$e',textAlign: TextAlign.center,),
+      ));
+    } on Error catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('$e',textAlign: TextAlign.center,),
+      ));
     }
   }
 
@@ -105,27 +115,34 @@ class _OtpPageState extends State<OtpPage> {
                   child: Text(
                       'JobsWay will send a One time password'),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 28.0),
-                  child: OTPTextField(
-                    length: 6,
-                    width: MediaQuery.of(context).size.width,
-                    fieldWidth: 50,
-                    style: GoogleFonts.poppins(
-                        fontSize: 17
-                    ),
-                    textFieldAlignment: MainAxisAlignment.center,
-                    fieldStyle: FieldStyle.underline,
-                    onCompleted: (pin) async {
-
-                      otpPin = pin;
-
-                    },
-                    onChanged: (pin){
-                      print(pin);
-                    },
-                  ),
+                widgets.otpField(
+                    context: context,
+                    onCompleted: (value){
+                      print(value);
+                      otpPin = value;
+                    }
                 ),
+                // Padding(
+                //   padding: const EdgeInsets.only(bottom: 28.0),
+                //   child: OTPTextField(
+                //     length: 6,
+                //     width: MediaQuery.of(context).size.width,
+                //     fieldWidth: 50,
+                //     style: GoogleFonts.poppins(
+                //         fontSize: 17
+                //     ),
+                //     textFieldAlignment: MainAxisAlignment.center,
+                //     fieldStyle: FieldStyle.underline,
+                //     onCompleted: (pin) async {
+                //
+                //       otpPin = pin;
+                //
+                //     },
+                //     onChanged: (pin){
+                //       print(pin);
+                //     },
+                //   ),
+                // ),
                 Center(
                   child: CountdownTimer(
                     endTime: endTime,

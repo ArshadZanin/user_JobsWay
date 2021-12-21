@@ -28,8 +28,9 @@ class _CheckingPageState extends State<CheckingPage> {
     if(premiumGet != null){
       premium = premiumGet;
     }
-
-    login = loginGet!;
+    if(loginGet != null){
+      login = loginGet;
+    }
   }
 
   @override

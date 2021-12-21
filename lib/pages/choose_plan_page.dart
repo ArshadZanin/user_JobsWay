@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
-import 'package:jobs_way/pages/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChoosePlanPage extends StatefulWidget {
@@ -123,7 +122,7 @@ class _ChoosePlanPageState extends State<ChoosePlanPage> {
                 final preferences = await SharedPreferences.getInstance();
                 await preferences.setString("premium", "normal");
                 widgets.premiumDeactivate();
-                
+
                 // Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => ResultPage(),),);
                 Navigator.pop(context);
               },

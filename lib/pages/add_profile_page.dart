@@ -282,8 +282,11 @@ class _AddProfilePageState extends State<AddProfilePage> {
                   child: widgets.textColorButton(
                       text: 'Submit',
                       onPress: () {
-                        var value = base64Encode(image!.readAsBytesSync());
 
+                        var value = '';
+                        if(image != null){
+                          value = base64Encode(image!.readAsBytesSync());
+                        }
                         firstName = firstNameController.text;
                         secondName = secondNameController.text;
                         jobTitle = jobTitleController.text;
