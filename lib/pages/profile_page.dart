@@ -19,6 +19,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   final widgets = Get.put(WidgetController());
   Uint8List? bytesImage;
+  List imageBytes = [];
   ///profile datas
   String firstName = '';
   String secondName = '';
@@ -27,6 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
   String location = '';
   String email = '';
   String phone = '';
+  List<Map<String, String>> experience = [];
   String experienceYear = '';
   String experienceJob = '';
   String experienceDescription = '';
@@ -44,6 +46,7 @@ class _ProfilePageState extends State<ProfilePage> {
   initState() {
     super.initState();
     retrieveData().whenComplete(() {
+      imageBytes = bytesImage!.toList();
       setState(() {
       });
     });
@@ -67,7 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
         actions: [
           IconButton(onPressed: () async {
             await Navigator.push(context, MaterialPageRoute(builder: (_) => const AddProfilePage()));
-            await retrieveData().whenComplete(() {
+            retrieveData().whenComplete(() {
               setState(() {
               });
             });
@@ -108,7 +111,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(20),
-                                child: bytesImage != null ?
+                                child: imageBytes.isNotEmpty ?
                                 Image.memory(
                                   bytesImage!,
                                   fit: BoxFit.cover,
@@ -241,33 +244,51 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               const SizedBox(height: 15,),
-              Text(
-                experienceYear,
-                style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                experienceJob,
-                style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  experienceDescription,
-                  style: GoogleFonts.poppins(
-                    color: Colors.black,
-                    fontSize: 20,
-                  ),
-                  textAlign: TextAlign.justify,
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: experience.length,
+                itemBuilder: (BuildContext context, int index){
+                  return Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                      ),
+                      child: Column(
+                      children: [
+                        Text(
+                          experience[index]['year']!,
+                          style: GoogleFonts.poppins(
+                            color: Colors.black,
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          experience[index]['job']!,
+                          style: GoogleFonts.poppins(
+                            color: Colors.black,
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            experience[index]['about']!,
+                            style: GoogleFonts.poppins(
+                              color: Colors.black,
+                              fontSize: 20,
+                            ),
+                            textAlign: TextAlign.justify,
 
-                ),
+                          ),
+                        ),
+                      ],
+                    ),),
+                  );
+                },
               ),
             ],
           ),
@@ -301,14 +322,11 @@ class _ProfilePageState extends State<ProfilePage> {
     String? phoneGet = preferences.getString("phone");
     phone = phoneGet ?? '';
 
-    String? experienceYearGet = preferences.getString("experienceYear");
-    experienceYear = experienceYearGet ?? '';
-
-    String? experienceJobGet = preferences.getString("experienceJob");
-    experienceJob = experienceJobGet ?? '';
-
-    String? experienceDescriptionGet = preferences.getString("experienceDescription");
-    experienceDescription = experienceDescriptionGet ?? '';
+    String? experienceGet = preferences.getString("experience");
+    var experienceList = jsonDecode(experienceGet!);
+    for( var x in experienceList){
+      experience.add({'yearFrom':x['yearFrom'],'yearTo':x['yearTo'],'positionTitle':x['positionTitle'],'desc':x['desc']});
+    }
 
     String? linkedinGet = preferences.getString("linkedin");
     linkedin = linkedinGet ?? '';

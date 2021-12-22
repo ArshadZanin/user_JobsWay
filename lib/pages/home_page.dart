@@ -25,10 +25,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final widgets = Get.put(WidgetController());
 
-  Future<void> loginUser({
-    required String password,
-    required String phone,
-  }) async {
+  Future<void> fetchUser() async {
 
     final preferences = await SharedPreferences.getInstance();
     String? idGet = preferences.getString("id");
@@ -41,8 +38,10 @@ class _HomePageState extends State<HomePage> {
     }
 
     try {
+      print(id);
       String apiUrl =
-          'https://jobsway-user.herokuapp.com/api/v1/user/user/$id';
+          'https://jobsway-user.herokuapp.com/api/v1/user/get-user/$id';
+      print(apiUrl);
       final response = await http.get(Uri.parse(apiUrl));
 
       if (response.statusCode == 200) {
@@ -51,6 +50,7 @@ class _HomePageState extends State<HomePage> {
         print(response.body);
         // return userModelOtpFromJson(responseString);
       } else {
+        print(response.body);
         // return null;
       }
     } on SocketException {
@@ -64,6 +64,12 @@ class _HomePageState extends State<HomePage> {
     } on Error catch (e) {
       print('Error: $e');
     }
+  }
+
+  @override
+  initState(){
+    super.initState();
+    fetchUser();
   }
 
   @override

@@ -718,4 +718,52 @@ class WidgetController extends GetxController {
       ),
     );
   }
+
+  Widget googleLoginButton({
+    required Function() onPress,
+    required bool isLoading,
+  }){
+    return ElevatedButton(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(
+            const Color(0xFF397AF3)),
+      ),
+      onPressed: onPress,
+      child: Padding(
+        padding: const EdgeInsets.all(5),
+        child: SizedBox(
+          width: 190,
+          child: isLoading ?
+          const Center(
+            child: SizedBox(
+              height: 35,
+              width: 35,
+              child: CircularProgressIndicator(color: Colors.white,strokeWidth: 1,),),
+          ) :
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: 40,
+                width: 40,
+                padding: const EdgeInsets.all(5),
+                color: Colors.white,
+                child: Image.asset(
+                    'assets/images/google_icon.png'),
+              ),
+              const SizedBox(
+                width: 5,
+              ),
+              Text(
+                'Sign Up with Google',
+                style: GoogleFonts.poppins(
+                    color: Colors.white),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
 }

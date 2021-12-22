@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jobs_way/api/google_signin_api.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
@@ -28,6 +29,7 @@ class _LogInState extends State<LogIn> {
   final passwordController = TextEditingController();
   bool _isObscurePassword = true;
   bool _isLoading = false;
+  bool _isGoogleLoading = false;
 
   Future<UserModelOtp?> loginUser({
     required String password,
@@ -145,7 +147,7 @@ class _LogInState extends State<LogIn> {
                               if (emailOrUserNameController.text.length < 10) {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(const SnackBar(
-                                  content: Text('phone number is not correct!'),
+                                  content: Text('phone number is not correct!',textAlign: TextAlign.center,),
                                 ));
                                 _isLoading = false;
                                 setState(() {
@@ -154,7 +156,7 @@ class _LogInState extends State<LogIn> {
                               } else if (passwordController.text.length < 8) {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(const SnackBar(
-                                  content: Text('check your password'),
+                                  content: Text('check your password',textAlign: TextAlign.center,),
                                 ));
                                 _isLoading = false;
                                 setState(() {
@@ -181,7 +183,7 @@ class _LogInState extends State<LogIn> {
                                 } else {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(const SnackBar(
-                                    content: Text('Sign in Failed'),
+                                    content: Text('Sign in Failed',textAlign: TextAlign.center,),
                                   ));
                                   _isLoading = false;
                                   setState(() {
@@ -200,48 +202,17 @@ class _LogInState extends State<LogIn> {
                         const SizedBox(
                           height: 15,
                         ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                const Color(0xFF397AF3)),
-                          ),
-                          onPressed: () {
-                            signIn(context);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: SizedBox(
-                              width: 190,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 40,
-                                    width: 40,
-                                    padding: const EdgeInsets.all(5),
-                                    color: Colors.white,
-                                    child: Image.asset(
-                                        'assets/images/google_icon.png'),
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    'Sign Up with Google',
-                                    style: GoogleFonts.poppins(
-                                        color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+                        widgets.googleLoginButton(onPress: (){
+                          _isGoogleLoading = true;
+                          setState(() {});
+                          signIn(context);
+                        },
+                          isLoading: _isGoogleLoading,),
                         // const SizedBox(height: 15,),
                         widgets.buttonWithText(
                           text: "New to JobsWay?",
                           buttonText: "Sign Up",
                           onPress: () {
-                            debugPrint("Sign Up");
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
@@ -261,42 +232,70 @@ class _LogInState extends State<LogIn> {
   }
 
   Future signIn(BuildContext context) async {
-    print('Started');
-    final user = await GoogleSignInApi.login();
-    print('user get');
 
-    if (user == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Sign in Failed'),
-      ));
-    } else {
-      var details = await logInUserWithGoogle(
-        email: user.email,
-        id: user.id,
-        name: user.displayName!,
-      );
-      print('data send');
+    try{
+      final user = await GoogleSignInApi.login();
 
-      if (details!.token != null) {
-        await initializePreference(
-          token: details.token!,
-          name: details.user!.name!,
-          ban: details.user!.ban!,
-          email: details.user!.email!,
-          id: details.user!.id!,
-          password: details.user!.password!,
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => HomePage(),
-          ),
-        );
-      } else {
+      if (user == null) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Sign in Failed'),
+          content: Text('Sign in Failed',textAlign: TextAlign.center,),
         ));
+        _isGoogleLoading = false;
+        setState(() {});
+      } else {
+        var details = await logInUserWithGoogle(
+          email: user.email,
+          id: user.id,
+          name: user.displayName!,
+        );
+
+        if (details!.token != null) {
+          await initializePreference(
+            token: details.token!,
+            name: details.user!.name!,
+            ban: details.user!.ban!,
+            email: details.user!.email!,
+            id: details.user!.id!,
+            password: details.user!.password!,
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => HomePage(),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Sign in Failed',textAlign: TextAlign.center,),
+          ));
+          _isGoogleLoading = false;
+          setState(() {});
+        }
       }
+    }on PlatformException catch(e){
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(e.code,textAlign: TextAlign.center,),
+      ));
+      _isGoogleLoading = false;
+      setState(() {});
+    }on SocketException {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Check network connection',textAlign: TextAlign.center,),
+      ));
+      _isGoogleLoading = false;
+      setState(() {});
+    } on TimeoutException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('$e',textAlign: TextAlign.center,),
+      ));
+      _isGoogleLoading = false;
+      setState(() {});
+    } on Error catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('$e',textAlign: TextAlign.center,),
+      ));
+      _isGoogleLoading = false;
+      setState(() {});
     }
   }
 
@@ -305,22 +304,47 @@ class _LogInState extends State<LogIn> {
     required String id,
     required String email,
   }) async {
-    const String apiUrl =
-        'https://jobsway-user.herokuapp.com/api/v1/user/googlesign';
-    List<String> names = name.split(' ');
-    final response = await http.post(Uri.parse(apiUrl), body: {
-      "email": email,
-      "firstName": names[0],
-      "lastName": names[1],
-      "password": id
-    });
+    try{
+      const String apiUrl =
+          'https://jobsway-user.herokuapp.com/api/v1/user/googlesign';
+      List<String> names = name.split(' ');
+      final response = await http.post(Uri.parse(apiUrl), body: {
+        "email": email,
+        "firstName": names[0],
+        "lastName": names[1],
+        "password": id
+      });
 
-    if (response.statusCode == 200) {
-      Map<String, dynamic> responseString = jsonDecode(response.body);
-      debugPrint('$responseString');
-      return GoogleUser.fromJson(responseString);
-    } else {
-      return null;
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseString = jsonDecode(response.body);
+        debugPrint('$responseString');
+        return GoogleUser.fromJson(responseString);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Sign in Failed'),
+        ));
+        _isGoogleLoading = false;
+        setState(() {});
+        return null;
+      }
+    }on SocketException {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Check network connection',textAlign: TextAlign.center,),
+      ));
+      _isGoogleLoading = false;
+      setState(() {});
+    } on TimeoutException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('$e',textAlign: TextAlign.center,),
+      ));
+      _isGoogleLoading = false;
+      setState(() {});
+    } on Error catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('$e',textAlign: TextAlign.center,),
+      ));
+      _isGoogleLoading = false;
+      setState(() {});
     }
   }
 

@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,6 +26,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
 
   File? image;
   Uint8List? bytesImage;
+  bool showImage = false;
 
   ///profile datas
   String firstName = '';
@@ -34,6 +36,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
   String location = '';
   String email = '';
   String phone = '';
+  List<Map<String, String>> experience = [];
   String experienceYear = '';
   String experienceJob = '';
   String experienceDescription = '';
@@ -50,7 +53,8 @@ class _AddProfilePageState extends State<AddProfilePage> {
   final locationController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
-  final experienceYearController = TextEditingController();
+  final experienceFromController = TextEditingController();
+  final experienceToController = TextEditingController();
   final experienceJobController = TextEditingController();
   final experienceAboutController = TextEditingController();
   final linkedInController = TextEditingController();
@@ -64,7 +68,8 @@ class _AddProfilePageState extends State<AddProfilePage> {
     super.initState();
     retrieveData().whenComplete(() async {
 
-      if(bytesImage != null){
+      if(bytesImage != []){
+        showImage = true;
         Directory tempDir = await getTemporaryDirectory();
         var tempPath = tempDir.path;
         // await File('$tempPath/profile.png').delete();
@@ -72,6 +77,8 @@ class _AddProfilePageState extends State<AddProfilePage> {
         await file.writeAsBytes(bytesImage!.buffer
             .asUint8List(bytesImage!.offsetInBytes, bytesImage!.lengthInBytes));
         image = file;
+      }else{
+        showImage = false;
       }
 
       if(secondName.isEmpty){
@@ -87,9 +94,10 @@ class _AddProfilePageState extends State<AddProfilePage> {
       locationController.text = location;
       emailController.text = email;
       phoneController.text = phone;
-      experienceYearController.text = experienceYear;
-      experienceJobController.text = experienceJob;
-      experienceAboutController.text = experienceDescription;
+      experienceFromController.text = '';
+      experienceToController.text = '';
+      experienceJobController.text = '';
+      experienceAboutController.text = '';
       linkedInController.text = linkedin;
       instagramController.text = instagram;
       twitterController.text = twitter;
@@ -97,6 +105,79 @@ class _AddProfilePageState extends State<AddProfilePage> {
       setState(() {});
       widgets.increment();
     });
+  }
+
+  Future<void> updateUser() async {
+
+    final preferences = await SharedPreferences.getInstance();
+    String? id = preferences.getString("id");
+
+    String fileExtension =
+        image!.path.split('/').last.split('.').last;
+
+    final bytes = await image!.readAsBytes();
+    var value = base64.encode(bytes);
+
+    final jsonMap = {
+      "userDetails" : {
+        "firstName" : firstName,
+        "lastName" : secondName,
+        "designation" : jobTitle,
+        "instagram" : instagram,
+        "twitter" : twitter,
+        "facebook" : facebook,
+        "linkedIn" : linkedin,
+        "skills" : skills,
+        "location" : location ,
+        "phone" : phone,
+        "portfolio" : "https://www.nihal-a.github.io",
+        "experience" : experience
+      },
+      "image": """data:image/$fileExtension;base64,$value"""
+    };
+    String jsonData = jsonEncode(jsonMap);
+
+    print(jsonData);
+
+    try{
+
+      String apiUrl =
+          'https://jobsway-user.herokuapp.com/api/v1/user/edit-profile/$id';
+      // const String apiUrl = 'https://reqres.in/api/login';
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        body: jsonData,
+        headers: {"Content-Type": "application/json"},
+      );
+
+      print(response.statusCode);
+      print(response.body);
+
+      if (response.statusCode == 200) {
+        final String responseString = response.body;
+        // return userModelOtpFromJson(responseString);
+      } else {
+        final result = jsonDecode(response.body);
+        if (result['error'] != null) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('${result['error']}',textAlign: TextAlign.center,),
+          ));
+        }
+        // return null;
+      }
+    }on SocketException {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Check network connection',textAlign: TextAlign.center,),
+      ));
+    } on TimeoutException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('$e',textAlign: TextAlign.center,),
+      ));
+    } on Error catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('$e',textAlign: TextAlign.center,),
+      ));
+    }
   }
 
   @override
@@ -133,6 +214,10 @@ class _AddProfilePageState extends State<AddProfilePage> {
                       image = (await Utils.pickImage(
                         cropImage: cropSquareImage,
                       ))!;
+                      if(image != null){
+                        showImage = true;
+                      }
+
                       setState(() {});
                     },
                     child: Container(
@@ -144,7 +229,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: image == null ? Container() : Image.file(image!),
+                        child: image != null ? Image.file(image!): Container(),
                       ),
                     ),
                   ),
@@ -205,8 +290,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                         },
                           child: Container(
                             decoration: BoxDecoration(
-                              border: Border.all(
-                              )
+                              border: Border.all(),
                             ),
                             child: Center(
                                 child: Text(skills[index]),
@@ -225,14 +309,72 @@ class _AddProfilePageState extends State<AddProfilePage> {
               widgets.textFieldGrey(
                   label: 'Phone', textController: phoneController),
 
+
+              widgets.textWidget(text: 'Experience',size: 15,bold: true),
+              Row(
+                children: [
+                  Expanded(
+                    child: widgets.textFieldGrey(
+                        label: 'From', textController: experienceFromController),
+                  ),
+                  Expanded(
+                    child: widgets.textFieldGrey(
+                        label: 'To', textController: experienceToController),
+                  ),
+                ],
+              ),
               widgets.textFieldGrey(
-                  label: 'Experience Year', textController: experienceYearController),
-              widgets.textFieldGrey(
-                  label: 'Experienced Job Title', textController: experienceJobController),
+                  label: 'Job Title', textController: experienceJobController),
               widgets.textFieldGrey(
                   label: 'About Job',
                 textController: experienceAboutController,
                 maxLines: 5
+              ),
+              const SizedBox(height: 15,),
+              widgets.textColorButton(
+                text: 'Add Experience',
+                onPress: (){
+                  var from = experienceFromController.text.trim();
+                  var to = experienceToController.text.trim();
+                  var job = experienceJobController.text;
+                  var about = experienceAboutController.text;
+                  experienceFromController.text = '';
+                  experienceToController.text = '';
+                  experienceJobController.text = '';
+                  experienceAboutController.text = '';
+                  if(from != '' && to != '' && job != ''){
+                    experience.add({'yearFrom':from,'yearTo':to, 'positionTitle':job,'desc':about});
+                    setState(() {
+                    });
+                    // print(experience['year']);
+                  }
+                },
+              ),
+              const SizedBox(height: 15,),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: experience.length,
+                  itemBuilder: (BuildContext context, int index){
+                    return InkWell(
+                      onLongPress: (){
+                        experience.removeAt(index);
+                        setState(() {});
+                      },
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              widgets.textWidget(text: '${experience[index]['yearFrom']}-${experience[index]['yearTo']}',size: 15,bold: true),
+                              widgets.textWidget(text: experience[index]['positionTitle']!,size: 15,bold: true),
+                              widgets.textWidget(text: experience[index]['desc']!,size: 15,bold: true),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
               ),
 
               widgets.textFieldGrey(
@@ -281,7 +423,21 @@ class _AddProfilePageState extends State<AddProfilePage> {
               Center(
                   child: widgets.textColorButton(
                       text: 'Submit',
-                      onPress: () {
+                      onPress: () async {
+
+                        var from = experienceFromController.text.trim();
+                        var to = experienceToController.text.trim();
+                        var job = experienceJobController.text;
+                        var about = experienceAboutController.text;
+                        experienceFromController.text = '';
+                        experienceToController.text = '';
+                        experienceJobController.text = '';
+                        experienceAboutController.text = '';
+                        if(from != '' && to != '' && job != ''){
+                          experience.add({'yearFrom':from,'yearTo':to, 'positionTitle':job,'desc':about});
+                          setState(() {
+                          });
+                        }
 
                         var value = '';
                         if(image != null){
@@ -293,7 +449,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                         location = locationController.text;
                         email = emailController.text;
                         phone = phoneController.text;
-                        experienceYear = experienceYearController.text;
+                        // experienceYear = experienceYearController.text;
                         experienceJob = experienceJobController.text;
                         experienceDescription = experienceAboutController.text;
                         linkedin = linkedInController.text;
@@ -305,6 +461,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                         }
 
                         initializePreference(image: value);
+                        await updateUser();
                         Navigator.pop(context);
                         // Navigator.pop(context);
                       })),
@@ -348,9 +505,8 @@ class _AddProfilePageState extends State<AddProfilePage> {
     await preferences.setString("location", location);
     await preferences.setString("email", email);
     await preferences.setString("phone", phone);
-    await preferences.setString("experienceYear", experienceYear);
-    await preferences.setString("experienceJob", experienceJob);
-    await preferences.setString("experienceDescription", experienceDescription);
+    var experienceList = jsonEncode(experience);
+    await preferences.setString("experience", experienceList);
     await preferences.setString("linkedin", linkedin);
     await preferences.setString("instagram", instagram);
     await preferences.setString("twitter", twitter);
@@ -385,14 +541,13 @@ class _AddProfilePageState extends State<AddProfilePage> {
     String? phoneGet = preferences.getString("phone");
     phone = phoneGet ?? '';
 
-    String? experienceYearGet = preferences.getString("experienceYear");
-    experienceYear = experienceYearGet ?? '';
+    String? experienceGet = preferences.getString("experience");
+    var experienceList = jsonDecode(experienceGet!);
+    for( var x in experienceList){
+      experience.add({'yearFrom':x['yearFrom'],'yearTo':x['yearTo'],'positionTitle':x['positionTitle'],'desc':x['desc']});
+    }
+    // experience = experienceList.toList() ?? [];
 
-    String? experienceJobGet = preferences.getString("experienceJob");
-    experienceJob = experienceJobGet ?? '';
-
-    String? experienceDescriptionGet = preferences.getString("experienceDescription");
-    experienceDescription = experienceDescriptionGet ?? '';
 
     String? linkedinGet = preferences.getString("linkedin");
     linkedin = linkedinGet ?? '';
