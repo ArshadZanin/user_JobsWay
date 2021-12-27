@@ -46,7 +46,13 @@ class _ProfilePageState extends State<ProfilePage> {
   initState() {
     super.initState();
     retrieveData().whenComplete(() {
-      imageBytes = bytesImage!.toList();
+
+      if(bytesImage != null){
+        imageBytes = bytesImage!.toList();
+      }else{
+        imageBytes = [];
+      }
+
       setState(() {
       });
     });
@@ -258,7 +264,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Column(
                       children: [
                         Text(
-                          experience[index]['year']!,
+                          '${experience[index]['yearFrom']}-${experience[index]['yearTo']}',
                           style: GoogleFonts.poppins(
                             color: Colors.black,
                             fontSize: 25,
@@ -266,7 +272,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                         Text(
-                          experience[index]['job']!,
+                          experience[index]['positionTitle']!,
                           style: GoogleFonts.poppins(
                             color: Colors.black,
                             fontSize: 25,
@@ -276,7 +282,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Text(
-                            experience[index]['about']!,
+                            experience[index]['desc']!,
                             style: GoogleFonts.poppins(
                               color: Colors.black,
                               fontSize: 20,
@@ -323,7 +329,9 @@ class _ProfilePageState extends State<ProfilePage> {
     phone = phoneGet ?? '';
 
     String? experienceGet = preferences.getString("experience");
-    var experienceList = jsonDecode(experienceGet!);
+    print(experienceGet);
+    var experienceList = jsonDecode(experienceGet ?? '[]');
+    experience.clear();
     for( var x in experienceList){
       experience.add({'yearFrom':x['yearFrom'],'yearTo':x['yearTo'],'positionTitle':x['positionTitle'],'desc':x['desc']});
     }
@@ -332,7 +340,7 @@ class _ProfilePageState extends State<ProfilePage> {
     linkedin = linkedinGet ?? '';
 
     String? instagramGet = preferences.getString("instagram");
-    instagram = instagramGet ?? '';
+    instagram = instagramGet ?? '{}';
 
     String? twitterGet = preferences.getString("twitter");
     twitter = twitterGet ?? '';

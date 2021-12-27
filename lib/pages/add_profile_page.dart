@@ -111,6 +111,8 @@ class _AddProfilePageState extends State<AddProfilePage> {
 
     final preferences = await SharedPreferences.getInstance();
     String? id = preferences.getString("id");
+    String? emailGet = preferences.getString("email");
+    String? phoneGet = preferences.getString("phone");
 
     String fileExtension =
         image!.path.split('/').last.split('.').last;
@@ -118,23 +120,64 @@ class _AddProfilePageState extends State<AddProfilePage> {
     final bytes = await image!.readAsBytes();
     var value = base64.encode(bytes);
 
-    final jsonMap = {
-      "userDetails" : {
-        "firstName" : firstName,
-        "lastName" : secondName,
-        "designation" : jobTitle,
-        "instagram" : instagram,
-        "twitter" : twitter,
-        "facebook" : facebook,
-        "linkedIn" : linkedin,
-        "skills" : skills,
-        "location" : location ,
-        "phone" : phone,
-        "portfolio" : "https://www.nihal-a.github.io",
-        "experience" : experience
-      },
-      "image": """data:image/$fileExtension;base64,$value"""
-    };
+    Map jsonMap = {};
+
+    // if(emailGet != null && phoneGet != null){
+      jsonMap = {
+        "userDetails" : {
+          "name" : "$firstName $secondName",
+          "designation" : jobTitle,
+          "instagram" : instagram,
+          "twitter" : twitter,
+          "facebook" : facebook,
+          "linkedIn" : linkedin,
+          "skills" : skills,
+          "email" : email,
+          "phone" : phone,
+          "location" : location ,
+          "portfolio" : "https://www.nihal-a.github.io",
+          "experience" : experience
+        },
+        "image": """data:image/$fileExtension;base64,$value"""
+      };
+    // }else if(emailGet != null){
+    //   jsonMap = {
+    //     "userDetails" : {
+    //       "firstName" : firstName,
+    //       "lastName" : secondName,
+    //       "designation" : jobTitle,
+    //       "instagram" : instagram,
+    //       "twitter" : twitter,
+    //       "facebook" : facebook,
+    //       "linkedIn" : linkedin,
+    //       "skills" : skills,
+    //       "location" : location ,
+    //       "phone" : phone,
+    //       "portfolio" : "https://www.nihal-a.github.io",
+    //       "experience" : experience
+    //     },
+    //     "image": """data:image/$fileExtension;base64,$value"""
+    //   };
+    // }else{
+    //   jsonMap = {
+    //     "userDetails" : {
+    //       "firstName" : firstName,
+    //       "lastName" : secondName,
+    //       "designation" : jobTitle,
+    //       "instagram" : instagram,
+    //       "twitter" : twitter,
+    //       "facebook" : facebook,
+    //       "linkedIn" : linkedin,
+    //       "skills" : skills,
+    //       "location" : location ,
+    //       "email" : email,
+    //       "portfolio" : "https://www.nihal-a.github.io",
+    //       "experience" : experience
+    //     },
+    //     "image": """data:image/$fileExtension;base64,$value"""
+    //   };
+    // }
+
     String jsonData = jsonEncode(jsonMap);
 
     print(jsonData);
@@ -213,7 +256,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                     onTap: () async {
                       image = (await Utils.pickImage(
                         cropImage: cropSquareImage,
-                      ))!;
+                      ));
                       if(image != null){
                         showImage = true;
                       }
@@ -317,6 +360,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
                     child: widgets.textFieldGrey(
                         label: 'From', textController: experienceFromController),
                   ),
+                  const SizedBox(width: 5,),
                   Expanded(
                     child: widgets.textFieldGrey(
                         label: 'To', textController: experienceToController),
@@ -459,9 +503,9 @@ class _AddProfilePageState extends State<AddProfilePage> {
                         if(skillsController.text != ''){
                           skills.add(skillsController.text);
                         }
-
-                        initializePreference(image: value);
                         await updateUser();
+                        initializePreference(image: value);
+
                         Navigator.pop(context);
                         // Navigator.pop(context);
                       })),
@@ -543,6 +587,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
 
     String? experienceGet = preferences.getString("experience");
     var experienceList = jsonDecode(experienceGet!);
+    experience.clear();
     for( var x in experienceList){
       experience.add({'yearFrom':x['yearFrom'],'yearTo':x['yearTo'],'positionTitle':x['positionTitle'],'desc':x['desc']});
     }

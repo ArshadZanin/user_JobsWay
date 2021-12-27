@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jobs_way/controller/api_controller.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
 
 class HomeScreenPage extends StatefulWidget {
@@ -15,6 +16,8 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
   final searchController = TextEditingController();
   final locationController = TextEditingController();
   final widgets = Get.put(WidgetController());
+  final apis = Get.put(ApiController());
+
 
   int pageIndex = 0;
 
@@ -58,9 +61,9 @@ class _HomeScreenPageState extends State<HomeScreenPage> {
             ),
             const SizedBox(height: 25,),
             widgets.textColorButton(text: 'Search', onPress: (){
+              apis.fetchUser(context);
               pageIndex = 1;
               setState(() {
-
               });
             }),
             const SizedBox(height: 25,),

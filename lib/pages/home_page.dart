@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jobs_way/controller/api_controller.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
 import 'package:jobs_way/login_signup/log_in.dart';
 import 'package:jobs_way/model/otp_signup_model.dart';
@@ -11,6 +14,7 @@ import 'package:jobs_way/pages/home_screen_page.dart';
 import 'package:jobs_way/pages/my_jobs_page.dart';
 import 'package:jobs_way/pages/settings_page.dart';
 import 'package:badges/badges.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
@@ -24,52 +28,63 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final widgets = Get.put(WidgetController());
+  final apis = Get.put(ApiController());
 
-  Future<void> fetchUser() async {
 
-    final preferences = await SharedPreferences.getInstance();
-    String? idGet = preferences.getString("id");
-    String id = '';
-    if(idGet != null){
-      id = idGet;
-    }else{
-      preferences.clear();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LogIn(),),);
-    }
+  ///profile datas
+  String firstName = '';
+  String secondName = '';
+  String jobTitle = '';
+  List<String> skills = [];
+  String location = '';
+  String email = '';
+  String phone = '';
+  List<Map<String, String>> experience = [];
+  String experienceYear = '';
+  String experienceJob = '';
+  String experienceDescription = '';
+  String linkedin = '';
+  String instagram = '';
+  String twitter = '';
+  String facebook = '';
 
-    try {
-      print(id);
-      String apiUrl =
-          'https://jobsway-user.herokuapp.com/api/v1/user/get-user/$id';
-      print(apiUrl);
-      final response = await http.get(Uri.parse(apiUrl));
-
-      if (response.statusCode == 200) {
-        final String responseString = response.body;
-
-        print(response.body);
-        // return userModelOtpFromJson(responseString);
-      } else {
-        print(response.body);
-        // return null;
+  Future<void> fetchAndUpdate() async {
+    print('data fetching Started');
+    var user = await apis.fetchUser(context);
+    print('data fetching completed - ${user!.id}');
+    if(user != null){
+      var names = user.name!.split(' ');
+      firstName = names[0];
+      secondName = names[1];
+      jobTitle = user.designation ?? '';
+      for(var x in user.skills!){
+        skills.add(x);
       }
-    } on SocketException {
-      Get.snackbar('Something went Wrong!', 'Check network connection',
-          icon: const Icon(Icons.network_check_outlined));
-    } on TimeoutException catch (e) {
-      Get.snackbar(
-        'Something went Wrong!',
-        '$e',
-      );
-    } on Error catch (e) {
-      print('Error: $e');
+      print(skills);
+      location = user.location ?? '';
+      email = user.email ?? '';
+      phone = user.phone ?? '';
+      for(var x in user.experience!){
+        experience.add({"yearFrom" : x.yearFrom!,"yearTo" : x.yearTo!, "positionTitle":x.positionTitle!,"desc":x.desc!});
+      }
+      linkedin = user.linkedIn ?? '';
+      instagram = user.instagram ?? '';
+      twitter = user.twitter ?? '';
+      facebook = user.facebook ?? '';
+
+      var response = await http.get(Uri.parse(user.imgUrl!));
+      var value = base64Encode(response.bodyBytes);
+      initializePreference(image: value);
     }
+
+
   }
+
 
   @override
   initState(){
     super.initState();
-    fetchUser();
+    fetchAndUpdate();
   }
 
   @override
@@ -127,4 +142,26 @@ class _HomePageState extends State<HomePage> {
       }),
     );
   }
+
+  Future<void> initializePreference({
+    required String image,
+  }) async {
+    print('data saved');
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.setString("image", image);
+    await preferences.setString("firstName", firstName);
+    await preferences.setString("secondName", secondName);
+    await preferences.setString("jobTitle", jobTitle);
+    await preferences.setString("location", location);
+    await preferences.setString("email", email);
+    await preferences.setString("phone", phone);
+    var experienceList = jsonEncode(experience);
+    await preferences.setString("experience", experienceList);
+    await preferences.setString("linkedin", linkedin);
+    await preferences.setString("instagram", instagram);
+    await preferences.setString("twitter", twitter);
+    await preferences.setString("facebook", facebook);
+    await preferences.setStringList("skillList", skills);
+  }
+
 }

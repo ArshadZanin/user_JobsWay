@@ -58,15 +58,18 @@ class _SignUpState extends State<SignUp> {
         "email": email
       });
 
+      print(response.statusCode);
       if (response.statusCode == 200) {
         final String responseString = response.body;
 
         return userModelFromJson(responseString);
       } else {
         final result = jsonDecode(response.body);
-        if (result['error'] != null) {
+        print(response.body);
+
+        if (result['errors'] != null) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('${result['error']}',textAlign: TextAlign.center,),
+            content: Text('${result['errors']}',textAlign: TextAlign.center,),
           ));
         }
         return null;
@@ -177,6 +180,9 @@ class _SignUpState extends State<SignUp> {
                                         onPress: () async {
 
                                           _isLoading = true;
+                                          setState(() {
+
+                                          });
 
                                           final firstName = firstNameController.text;
                                           final secondName = secondNameController.text;
@@ -184,12 +190,14 @@ class _SignUpState extends State<SignUp> {
                                           final phone = phoneController.text;
                                           final email = emailController.text;
 
+                                          print("data send to create");
                                           user = await createUser(
                                               firstName: firstName,
                                               secondName: secondName,
                                               password: password,
                                               phone: phone,
                                               email: email);
+                                          print("returned $user");
 
                                           if(user != null){
                                             Navigator.pushReplacement(

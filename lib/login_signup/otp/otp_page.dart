@@ -122,27 +122,6 @@ class _OtpPageState extends State<OtpPage> {
                       otpPin = value;
                     }
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.only(bottom: 28.0),
-                //   child: OTPTextField(
-                //     length: 6,
-                //     width: MediaQuery.of(context).size.width,
-                //     fieldWidth: 50,
-                //     style: GoogleFonts.poppins(
-                //         fontSize: 17
-                //     ),
-                //     textFieldAlignment: MainAxisAlignment.center,
-                //     fieldStyle: FieldStyle.underline,
-                //     onCompleted: (pin) async {
-                //
-                //       otpPin = pin;
-                //
-                //     },
-                //     onChanged: (pin){
-                //       print(pin);
-                //     },
-                //   ),
-                // ),
                 Center(
                   child: CountdownTimer(
                     endTime: endTime,
