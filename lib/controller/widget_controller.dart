@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +8,32 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jobs_way/pages/profile_page.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:http/http.dart' as http;
 
 class WidgetController extends GetxController {
+
+  var companyName = [].obs;
+  var companyLogo = [].obs;
+
+  void addDataToLists(){
+    companyName.add('Loading..');
+    companyLogo.add('http://cdn.onlinewebfonts.com/svg/img_235526.png');
+  }
+  void deleteDataLists(){
+    companyName.clear();
+    companyLogo.clear();
+  }
+
+  Future<void> fetchCompany(String companyId, int index) async {
+    String companyApi = "https://jobsway-user.herokuapp.com/api/v1/user/getcompany/$companyId";
+    var companyResult = await http.get(Uri.parse(companyApi));
+    if(companyResult.statusCode == 200){
+      print(jsonDecode(companyResult.body)['companyName']);
+      companyName[index] = (jsonDecode(companyResult.body)['companyName']);
+      companyLogo[index] = (jsonDecode(companyResult.body)['logoUrl']);
+    }
+  }
+
   RxBool premium = false.obs;
 
   void premiumActivate() {
@@ -281,7 +307,7 @@ class WidgetController extends GetxController {
     String? experience,
     required String postTime,
     String jobTime = 'full time / part time',
-    Function()? onTap,
+    // Function()? onTap,
   }) {
     return Card(
       color: const Color(0xFF2C2C2C),

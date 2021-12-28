@@ -1,13 +1,53 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
+import 'package:jobs_way/model/fetch_feature_job_model.dart';
 import 'package:jobs_way/pages/test_job_page.dart';
+import 'package:http/http.dart' as http;
 
-class JobDetailsPage extends StatelessWidget {
-  JobDetailsPage({Key? key}) : super(key: key);
+class JobDetailsPage extends StatefulWidget {
+  JobDetailsPage({Key? key, required this.jobDetails}) : super(key: key);
+
+  JobList? jobDetails;
+
+  @override
+  State<JobDetailsPage> createState() => _JobDetailsPageState();
+}
+
+class _JobDetailsPageState extends State<JobDetailsPage> {
 
   final widgets = Get.put(WidgetController());
+
+  String companyName = 'Loading..';
+  String companyLogo = 'http://cdn.onlinewebfonts.com/svg/img_235526.png';
+
+
+  Future<void> fetchCompany() async {
+
+    String companyId = '${widget.jobDetails!.companyId}';
+
+    String companyApi = "https://jobsway-user.herokuapp.com/api/v1/user/getcompany/$companyId";
+    var companyResult = await http.get(Uri.parse(companyApi));
+    if(companyResult.statusCode == 200){
+      var result = jsonDecode(companyResult.body);
+      print(result);
+
+      companyName = result["companyName"];
+      companyLogo = result["logoUrl"];
+      setState(() {
+
+      });
+    }
+  }
+
+  @override
+  initState(){
+    super.initState();
+    fetchCompany();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,14 +89,16 @@ class JobDetailsPage extends StatelessWidget {
                             elevation: 5,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 20),
+                                  horizontal: 0, vertical: 0),
                               child: SizedBox(
-                                width: 60,
-                                height: 60,
-                                child: Image.network(
-                                  'https://img.flaticon.com/icons/png/512/2702/2702602.png?'
-                                  'size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF',
-                                  fit: BoxFit.cover,
+                                width: 120,
+                                height: 120,
+                                child:ClipRRect(
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: Image.network(
+                                    companyLogo,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ),
@@ -65,7 +107,7 @@ class JobDetailsPage extends StatelessWidget {
                             height: 15,
                           ),
                           Text(
-                            'Google',
+                            companyName,
                             style: GoogleFonts.poppins(
                               color: Colors.black,
                               fontSize: 40,
@@ -76,7 +118,7 @@ class JobDetailsPage extends StatelessWidget {
                             height: 5,
                           ),
                           Text(
-                            'Bengaluru, India',
+                            '${widget.jobDetails!.jobLocation}',
                             style: GoogleFonts.poppins(
                               color: Colors.grey,
                               fontSize: 18,
@@ -90,7 +132,7 @@ class JobDetailsPage extends StatelessWidget {
               ),
               Center(
                 child: Text(
-                  'Sr.Flutter Developer',
+                  '${widget.jobDetails!.jobTitle}',
                   style: GoogleFonts.poppins(
                     color: Colors.black,
                     fontSize: 30,
@@ -112,7 +154,7 @@ class JobDetailsPage extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Full time',
+                    '${widget.jobDetails!.timeSchedule}',
                     style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 25,
@@ -135,32 +177,7 @@ class JobDetailsPage extends StatelessWidget {
                 ],
               ),
               Text(
-                'In publishing and graphic design, Lorem ipsum is'
-                ' a placeholder text commonly used .',
-                style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontSize: 18,
-                ),
-              ),
-              Text(
-                'In publishing and graphic design, Lorem ipsum is'
-                ' a placeholder text commonly used .',
-                style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontSize: 18,
-                ),
-              ),
-              Text(
-                'In publishing and graphic design, Lorem ipsum is'
-                ' a placeholder text commonly used .',
-                style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontSize: 18,
-                ),
-              ),
-              Text(
-                'In publishing and graphic design, Lorem ipsum is'
-                ' a placeholder text commonly used .',
+                '${widget.jobDetails!.qualification}',
                 style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontSize: 18,
@@ -181,7 +198,7 @@ class JobDetailsPage extends StatelessWidget {
                 ],
               ),
               Text(
-                'Bachelor of Computer Application',
+                '${widget.jobDetails!.education}',
                 style: GoogleFonts.poppins(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
@@ -206,15 +223,7 @@ class JobDetailsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    'English',
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'Malayalam',
+                    '${widget.jobDetails!.language}',
                     style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 22,
@@ -222,30 +231,6 @@ class JobDetailsPage extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    'Hindi',
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'Spanish',
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
               ),
               Row(
                 children: [
@@ -262,23 +247,7 @@ class JobDetailsPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    'Dart',
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'Flutter',
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'Android',
+                    '${widget.jobDetails!.skills}',
                     style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 22,
@@ -314,7 +283,7 @@ class JobDetailsPage extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '4 - 8 years',
+                    '${widget.jobDetails!.minExp} - ${widget.jobDetails!.maxExp} years',
                     style: GoogleFonts.poppins(
                       color: Colors.black,
                       fontSize: 20,
