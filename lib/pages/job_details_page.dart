@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
 import 'package:jobs_way/model/fetch_feature_job_model.dart';
-import 'package:jobs_way/pages/test_job_page.dart';
 import 'package:http/http.dart' as http;
+import 'package:jobs_way/pages/apply_job_page.dart';
 
 class JobDetailsPage extends StatefulWidget {
   JobDetailsPage({Key? key, required this.jobDetails}) : super(key: key);
@@ -342,9 +342,10 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => TestJobPage(),
+                        builder: (_) => ApplyJobPage(jobId: widget.jobDetails!.id,),
                       ),
                     );
+                    // Navigator.pop(context);
                   }),
               const SizedBox(
                 height: 20,

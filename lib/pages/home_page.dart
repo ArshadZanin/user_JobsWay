@@ -49,9 +49,7 @@ class _HomePageState extends State<HomePage> {
   String facebook = '';
 
   Future<void> fetchAndUpdate() async {
-    print('data fetching Started');
     var user = await apis.fetchUser(context);
-    print('data fetching completed - ${user!.id}');
     if(user != null){
       var names = user.name!.split(' ');
       firstName = names[0];

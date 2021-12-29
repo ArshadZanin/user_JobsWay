@@ -12,25 +12,26 @@ import 'package:http/http.dart' as http;
 
 class WidgetController extends GetxController {
 
-  var companyName = [].obs;
-  var companyLogo = [].obs;
+  RxList<String> companyName = ['Loading..'].obs;
+  RxList<String> companyLogo = ['http://cdn.onlinewebfonts.com/svg/img_235526.png'].obs;
 
   void addDataToLists(){
     companyName.add('Loading..');
     companyLogo.add('http://cdn.onlinewebfonts.com/svg/img_235526.png');
   }
-  void deleteDataLists(){
-    companyName.clear();
-    companyLogo.clear();
+  void deleteDataLists(int index){
+    companyName.removeAt(index);
+    companyLogo.removeAt(index);
   }
 
   Future<void> fetchCompany(String companyId, int index) async {
+    addDataToLists();
     String companyApi = "https://jobsway-user.herokuapp.com/api/v1/user/getcompany/$companyId";
     var companyResult = await http.get(Uri.parse(companyApi));
     if(companyResult.statusCode == 200){
-      print(jsonDecode(companyResult.body)['companyName']);
-      companyName[index] = (jsonDecode(companyResult.body)['companyName']);
-      companyLogo[index] = (jsonDecode(companyResult.body)['logoUrl']);
+      // print(jsonDecode(companyResult.body)['companyName']);
+      companyName[index] = (jsonDecode(companyResult.body)['companyName'].toString());
+      companyLogo[index] = (jsonDecode(companyResult.body)['logoUrl'].toString());
     }
   }
 

@@ -28,6 +28,9 @@ class _AddProfilePageState extends State<AddProfilePage> {
   Uint8List? bytesImage;
   bool showImage = false;
 
+  bool typeEmail = true;
+  bool typePhone = true;
+
   ///profile datas
   String firstName = '';
   String secondName = '';
@@ -44,6 +47,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
   String instagram = '';
   String twitter = '';
   String facebook = '';
+  String portfolio = '';
 
   ///assign controllers
   final firstNameController = TextEditingController();
@@ -61,25 +65,13 @@ class _AddProfilePageState extends State<AddProfilePage> {
   final instagramController = TextEditingController();
   final twitterController = TextEditingController();
   final facebookController = TextEditingController();
+  final portfolioController = TextEditingController();
   final resumeController = TextEditingController();
 
   @override
   initState() {
     super.initState();
     retrieveData().whenComplete(() async {
-
-      if(bytesImage != []){
-        showImage = true;
-        Directory tempDir = await getTemporaryDirectory();
-        var tempPath = tempDir.path;
-        // await File('$tempPath/profile.png').delete();
-        File file = File('$tempPath/profile${widgets.i}.png');
-        await file.writeAsBytes(bytesImage!.buffer
-            .asUint8List(bytesImage!.offsetInBytes, bytesImage!.lengthInBytes));
-        image = file;
-      }else{
-        showImage = false;
-      }
 
       if(secondName.isEmpty){
         List<String> name = firstName.split(' ');
@@ -102,6 +94,30 @@ class _AddProfilePageState extends State<AddProfilePage> {
       instagramController.text = instagram;
       twitterController.text = twitter;
       facebookController.text = facebook;
+      portfolioController.text = portfolio;
+
+      if(email != ''){
+        typeEmail = false;
+      }
+      if(phone != ''){
+        typePhone = false;
+      }
+      setState(() {
+      });
+
+
+      if(bytesImage != []){
+        showImage = true;
+        Directory tempDir = await getTemporaryDirectory();
+        var tempPath = tempDir.path;
+        // await File('$tempPath/profile.png').delete();
+        File file = File('$tempPath/profile${widgets.i}.png');
+        await file.writeAsBytes(bytesImage!.buffer
+            .asUint8List(bytesImage!.offsetInBytes, bytesImage!.lengthInBytes));
+        image = file;
+      }else{
+        showImage = false;
+      }
       setState(() {});
       widgets.increment();
     });
@@ -135,7 +151,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
           "email" : email,
           "phone" : phone,
           "location" : location ,
-          "portfolio" : "https://www.nihal-a.github.io",
+          "portfolio" : portfolio,
           "experience" : experience
         },
         "image": """data:image/$fileExtension;base64,$value"""
@@ -347,10 +363,12 @@ class _AddProfilePageState extends State<AddProfilePage> {
                   label: 'Location', textController: locationController),
 
               widgets.textFieldGrey(
-                  label: 'Email', textController: emailController),
+                  label: 'Email', textController: emailController,
+                readOnly: typeEmail,
+              ),
 
               widgets.textFieldGrey(
-                  label: 'Phone', textController: phoneController),
+                  label: 'Phone', textController: phoneController,readOnly: typePhone,keyboardType: TextInputType.number),
 
 
               widgets.textWidget(text: 'Experience',size: 15,bold: true),
@@ -358,12 +376,12 @@ class _AddProfilePageState extends State<AddProfilePage> {
                 children: [
                   Expanded(
                     child: widgets.textFieldGrey(
-                        label: 'From', textController: experienceFromController),
+                        label: 'From', textController: experienceFromController,keyboardType: TextInputType.number),
                   ),
                   const SizedBox(width: 5,),
                   Expanded(
                     child: widgets.textFieldGrey(
-                        label: 'To', textController: experienceToController),
+                        label: 'To', textController: experienceToController,keyboardType: TextInputType.number),
                   ),
                 ],
               ),
@@ -433,6 +451,9 @@ class _AddProfilePageState extends State<AddProfilePage> {
               widgets.textFieldGrey(
                   label: 'Facebook Link', textController: facebookController),
 
+              widgets.textFieldGrey(
+                  label: 'Portfolio Link', textController: portfolioController),
+
               Row(
                 children: [
                   Expanded(
@@ -500,11 +521,12 @@ class _AddProfilePageState extends State<AddProfilePage> {
                         instagram = instagramController.text;
                         twitter = twitterController.text;
                         facebook = facebookController.text;
+                        portfolio = portfolioController.text;
                         if(skillsController.text != ''){
                           skills.add(skillsController.text);
                         }
                         await updateUser();
-                        initializePreference(image: value);
+                        await initializePreference(image: value);
 
                         Navigator.pop(context);
                         // Navigator.pop(context);
@@ -555,6 +577,7 @@ class _AddProfilePageState extends State<AddProfilePage> {
     await preferences.setString("instagram", instagram);
     await preferences.setString("twitter", twitter);
     await preferences.setString("facebook", facebook);
+    await preferences.setString("portfolio", portfolio);
     await preferences.setStringList("skillList", skills);
   }
 
@@ -605,6 +628,9 @@ class _AddProfilePageState extends State<AddProfilePage> {
 
     String? facebookGet = preferences.getString("facebook");
     facebook = facebookGet ?? '';
+
+    String? portfolioGet = preferences.getString("portfolio");
+    portfolio = portfolioGet ?? '';
 
     List<String>? listSkills = preferences.getStringList("skillList");
     if(listSkills != null){

@@ -22,11 +22,13 @@ class _FeaturedJobsPageState extends State<FeaturedJobsPage> {
   final widgets = Get.put(WidgetController());
 
   Future<FeatureJobFetch?> fetchFeatureJobs(BuildContext context) async {
+    print('started');
     String apiUrl = 'https://jobsway-user.herokuapp.com/api/v1/user/getfeaturedjobs';
 
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
+      print("response get");
 
       if (response.statusCode == 200) {
         final String responseString = response.body;
@@ -61,6 +63,7 @@ class _FeaturedJobsPageState extends State<FeaturedJobsPage> {
   // @override
   // initState(){
   //   super.initState();
+  //   print("something ");
   // }
   //
   // @override
@@ -95,8 +98,8 @@ class _FeaturedJobsPageState extends State<FeaturedJobsPage> {
                   return ListView.builder(
                     itemCount: snapshot.data!.jobList!.length,
                     itemBuilder: (BuildContext context, int index) {
-                      if(index == 0){
-                        widgets.deleteDataLists();
+                      if(snapshot.data!.jobList!.length < widgets.companyName.length){
+                        widgets.deleteDataLists(snapshot.data!.jobList!.length - 1);
                       }
                       widgets.addDataToLists();
                       var value = snapshot.data!.jobList![index];
