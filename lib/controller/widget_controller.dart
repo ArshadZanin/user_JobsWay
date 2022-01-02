@@ -12,28 +12,28 @@ import 'package:http/http.dart' as http;
 
 class WidgetController extends GetxController {
 
-  RxList<String> companyName = ['Loading..'].obs;
-  RxList<String> companyLogo = ['http://cdn.onlinewebfonts.com/svg/img_235526.png'].obs;
-
-  void addDataToLists(){
-    companyName.add('Loading..');
-    companyLogo.add('http://cdn.onlinewebfonts.com/svg/img_235526.png');
-  }
-  void deleteDataLists(int index){
-    companyName.removeAt(index);
-    companyLogo.removeAt(index);
-  }
-
-  Future<void> fetchCompany(String companyId, int index) async {
-    addDataToLists();
-    String companyApi = "https://jobsway-user.herokuapp.com/api/v1/user/getcompany/$companyId";
-    var companyResult = await http.get(Uri.parse(companyApi));
-    if(companyResult.statusCode == 200){
-      // print(jsonDecode(companyResult.body)['companyName']);
-      companyName[index] = (jsonDecode(companyResult.body)['companyName'].toString());
-      companyLogo[index] = (jsonDecode(companyResult.body)['logoUrl'].toString());
-    }
-  }
+  // RxList<String> companyName = ['Loading..'].obs;
+  // RxList<String> companyLogo = ['http://cdn.onlinewebfonts.com/svg/img_235526.png'].obs;
+  //
+  // void addDataToLists(){
+  //   companyName.add('Loading..');
+  //   companyLogo.add('http://cdn.onlinewebfonts.com/svg/img_235526.png');
+  // }
+  // void deleteDataLists(int index){
+  //   companyName.removeAt(index);
+  //   companyLogo.removeAt(index);
+  // }
+  //
+  // Future<void> fetchCompany(String companyId, int index) async {
+  //   addDataToLists();
+  //   String companyApi = "https://jobsway-user.herokuapp.com/api/v1/user/getcompany/$companyId";
+  //   var companyResult = await http.get(Uri.parse(companyApi));
+  //   if(companyResult.statusCode == 200){
+  //     // print(jsonDecode(companyResult.body)['companyName']);
+  //     companyName[index] = (jsonDecode(companyResult.body)['companyName'].toString());
+  //     companyLogo[index] = (jsonDecode(companyResult.body)['logoUrl'].toString());
+  //   }
+  // }
 
   RxBool premium = false.obs;
 
@@ -313,7 +313,7 @@ class WidgetController extends GetxController {
     return Card(
       color: const Color(0xFF2C2C2C),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(18.0),
         child: Column(
           children: [
             Column(
@@ -466,10 +466,11 @@ class WidgetController extends GetxController {
     required Function() onPress,
     required String srcImage,
     required String companyName,
+    required String duration,
     String? companyLocation,
   }) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
       child: Card(
         color: const Color(0xFF2C2C2C),
         shape: RoundedRectangleBorder(
@@ -477,7 +478,7 @@ class WidgetController extends GetxController {
         ),
         child: ListTile(
           title: Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -515,43 +516,44 @@ class WidgetController extends GetxController {
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            companyLocation!,
+                            '$companyLocation',
                             style: GoogleFonts.poppins(
                               color: Colors.grey,
                               fontSize: 18,
                             ),
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),
-                Text(
-                  'Complete Task',
-                  style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  'Questions\t: 4',
-                  style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  'Duration\t: 30 min',
-                  style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Center(
-                      child: textColorButton(
-                          text: 'Start Task', onPress: onPress)),
+                Row(
+                  children: [
+                    Column(
+                      children: [
+                        Text(
+                          'Questions\t: 4',
+                          style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          'Duration\t: $duration min',
+                          style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Center(
+                          child: textColorButton(
+                              text: 'Start Task', onPress: onPress)),
+                    ),
+                  ],
                 ),
               ],
             ),

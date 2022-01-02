@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
 import 'package:jobs_way/model/fetch_feature_job_model.dart';
 import 'package:jobs_way/pages/job_details_page.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class FeaturedJobsPage extends StatefulWidget {
   FeaturedJobsPage({Key? key}) : super(key: key);
@@ -21,19 +21,38 @@ class _FeaturedJobsPageState extends State<FeaturedJobsPage> {
 
   final widgets = Get.put(WidgetController());
 
-  Future<FeatureJobFetch?> fetchFeatureJobs(BuildContext context) async {
-    print('started');
-    String apiUrl = 'https://jobsway-user.herokuapp.com/api/v1/user/getfeaturedjobs';
+  RxList<String> companyName = ['Loading..'].obs;
+  RxList<String> companyLogo = ['http://cdn.onlinewebfonts.com/svg/img_235526.png'].obs;
 
+  void addDataToLists(){
+    companyName.add('Loading..');
+    companyLogo.add('http://cdn.onlinewebfonts.com/svg/img_235526.png');
+  }
+  void deleteDataLists(int index){
+    companyName.removeAt(index);
+    companyLogo.removeAt(index);
+  }
+
+  Future<void> fetchCompany(String companyId, int index) async {
+    addDataToLists();
+    String companyApi = "https://jobsway-user.herokuapp.com/api/v1/user/getcompany/$companyId";
+    var companyResult = await http.get(Uri.parse(companyApi));
+    if(companyResult.statusCode == 200){
+      // print(jsonDecode(companyResult.body)['companyName']);
+      companyName[index] = (jsonDecode(companyResult.body)['companyName'].toString());
+      companyLogo[index] = (jsonDecode(companyResult.body)['logoUrl'].toString());
+    }
+  }
+
+
+  Future<FeatureJobFetch?> fetchFeatureJobs(BuildContext context) async {
+    String apiUrl = 'https://jobsway-user.herokuapp.com/api/v1/user/getfeaturedjobs';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
-      print("response get");
 
       if (response.statusCode == 200) {
         final String responseString = response.body;
-
-        print(responseString);
 
         return featureJobFetchFromJson('{"jobList":$responseString}');
       } else {
@@ -98,29 +117,29 @@ class _FeaturedJobsPageState extends State<FeaturedJobsPage> {
                   return ListView.builder(
                     itemCount: snapshot.data!.jobList!.length,
                     itemBuilder: (BuildContext context, int index) {
-                      if(snapshot.data!.jobList!.length < widgets.companyName.length){
-                        widgets.deleteDataLists(snapshot.data!.jobList!.length - 1);
+                      if(snapshot.data!.jobList!.length < companyName.length){
+                        deleteDataLists(snapshot.data!.jobList!.length - 1);
                       }
-                      widgets.addDataToLists();
+                      addDataToLists();
                       var value = snapshot.data!.jobList![index];
-                      widgets.fetchCompany(value.companyId!, index);
+                      fetchCompany(value.companyId!, index);
                       return Obx(() {
                         return InkWell(
                           onTap: (){
-                            Navigator.push(
-                                context, MaterialPageRoute(
-                                builder: (_) => JobDetailsPage(jobDetails: value,),),);
+                            // Navigator.push(
+                            //     context, MaterialPageRoute(
+                            //     builder: (_) => JobDetailsPage(jobDetails: value,),),);
                           },
                           child: widgets.jobCardBlack(
-                              srcImage: widgets.companyLogo[index],
-                              companyName: widgets.companyName[index],
+                              srcImage: companyLogo[index],
+                              companyName: companyName[index],
                               companyLocation: value.jobLocation,
                               jobName: value.jobTitle!,
                               salaryRange: '30000 - 50000',
                               experience: '${value.minExp} - ${value
                                   .maxExp} year',
                               postTime: '10 days',
-                              jobTime: value.timeSchedule!,
+                              jobTime: '${value.timeSchedule}',
                               // onTap: () {
                               //   print('$index');
                               //   Navigator.push(
@@ -136,8 +155,11 @@ class _FeaturedJobsPageState extends State<FeaturedJobsPage> {
                     },
                   );
                 } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
+                  return Center(
+                    // child: CircularProgressIndicator(),
+                    child: Platform.isAndroid ?
+                    const CircularProgressIndicator() :
+                    const CupertinoActivityIndicator(),
                   );
                 }
               },

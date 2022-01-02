@@ -95,6 +95,7 @@ class _LogInState extends State<LogIn> {
                         widgets.textFieldGrey(
                           label: 'Phone Number',
                           textController: emailOrUserNameController,
+                            keyboardType: TextInputType.number
                         ),
                         const SizedBox(
                           height: 10,

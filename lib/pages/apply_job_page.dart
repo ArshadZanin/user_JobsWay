@@ -25,6 +25,8 @@ class ApplyJobPage extends StatefulWidget {
 
 class _ApplyJobPageState extends State<ApplyJobPage> {
 
+  bool _isLoading = false;
+
   final widgets = Get.put(WidgetController());
 
   File? filePdf;
@@ -210,15 +212,34 @@ class _ApplyJobPageState extends State<ApplyJobPage> {
 
               Padding(
                 padding: const EdgeInsets.all(18.0),
-                child: widgets.textColorButton(text: 'Apply', onPress: (){
+                child: widgets.textColorButtonCircle(
+                  text: 'Apply',
+                  onPress: () async {
+
+                    firstName = firstNameC.text;
+                    secondName = secondNameC.text;
+                    email = emailC.text;
+                    phone = phoneC.text;
+                    location = locationC.text;
+                    yearExp = yearExpC.text;
+                    portfolio = portfolioC.text;
+
+
+                    _isLoading = true;
+                    setState(() {
+
+                    });
 
                   yearExp = yearExpC.text;
 
                   print('apply started');
 
 
-                  postApplyJob();
-                },),
+                  await postApplyJob(context);
+                  setState(() {
+                  });
+
+                }, isLoading: _isLoading,),
               ),
 
             ],
@@ -268,7 +289,7 @@ class _ApplyJobPageState extends State<ApplyJobPage> {
     });
   }
 
-  Future<void> postApplyJob() async {
+  Future<void> postApplyJob(BuildContext context) async {
     // SharedPreferences prefs = await SharedPreferences.getInstance();
     //create multipart request for POST or PATCH method
     // var user = prefs.get("userData");
@@ -292,37 +313,23 @@ class _ApplyJobPageState extends State<ApplyJobPage> {
 
     try {
 
+      String userId = '';
+
+      final preferences = await SharedPreferences.getInstance();
+      String? idGet = preferences.getString("id");
+      if(idGet != null){
+        userId = idGet;
+      }else{
+        return;
+      }
+
+
       String apiUrl = 'https://jobsway-user.herokuapp.com/api/v1/user/applyjob/${widget.jobId}';
 
       var request = http.MultipartRequest("POST", Uri.parse(apiUrl));
 
-
-      print(request.url);
-      // final data = {
-      //   "firstName" : firstName,
-      //   "lastName" : secondName,
-      //   "email" : email,
-      //   "phone" : phone,
-      //   "location" : location,
-      //   "experience" : yearExp,
-      //   "portfolio" : portfolio
-      // };
-      //
-      // request = jsonToFormData(request, data);
-
-      // add text fields
-      // request.fields["formData"] = """{
-      //   "firstName" : $firstName ,
-      //   "lastName" : $secondName,
-      //   "email" : $email ,
-      //   "phone" : $phone ,
-      //   "location" : $location ,
-      //   "experience" : $yearExp ,
-      //   "portfolio" : $portfolio
-      // }""";
-
-
       Map<String, String> fieldMap = {
+        'userId' : userId,
         'firstName' : firstName,
         'secondName' : secondName,
         'email' : email,
@@ -333,6 +340,7 @@ class _ApplyJobPageState extends State<ApplyJobPage> {
         'image' : """data:image/$fileExtension;base64,$value"""
       };
       request.fields.addAll(fieldMap);
+      print(fieldMap);
       // request.fields["firstName"] = firstName;
       // request.fields["lastName"] = secondName;
       // request.fields["email"] = email;
@@ -356,14 +364,24 @@ class _ApplyJobPageState extends State<ApplyJobPage> {
 
       // print(response);
       if (response.statusCode == 200) {
+        _isLoading = false;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Job Applied', textAlign: TextAlign.center,),
+        ));
+        Navigator.pop(context);
         print("UPLOADED");
+
       }else{
-        print(response.statusCode);
-        print(response.headers);
-        print(response.reasonPhrase);
+        _isLoading = false;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Try Again!', textAlign: TextAlign.center,),
+        ));
       }
     } catch (e) {
-      print("ERROR $e");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Something went wrong!', textAlign: TextAlign.center,),
+      ));
+      _isLoading = false;
     }
   }
   jsonToFormData(http.MultipartRequest request, Map<String, dynamic> data) {

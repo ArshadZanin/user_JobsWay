@@ -9,6 +9,7 @@ import 'package:jobs_way/controller/api_controller.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
 import 'package:jobs_way/login_signup/log_in.dart';
 import 'package:jobs_way/model/otp_signup_model.dart';
+import 'package:jobs_way/pages/all_jobs_page.dart';
 import 'package:jobs_way/pages/featured_jobs.dart';
 import 'package:jobs_way/pages/home_screen_page.dart';
 import 'package:jobs_way/pages/my_jobs_page.dart';
@@ -92,12 +93,12 @@ class _HomePageState extends State<HomePage> {
       child: Obx(() {
         return Scaffold(
           appBar: widgets.appbarCustom(context),
-          body: TabBarView(
+          body: const TabBarView(
             children: <Widget>[
-              const HomeScreenPage(),
-              FeaturedJobsPage(),
-              const MyJobsPage(),
-              const SettingsPage(),
+              HomeScreenPage(),
+              AllJobsPage(),
+              MyJobsPage(),
+              SettingsPage(),
             ],
           ),
           bottomNavigationBar: Material(

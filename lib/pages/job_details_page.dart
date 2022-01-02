@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
-import 'package:jobs_way/model/fetch_feature_job_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:jobs_way/model/job_fetch_model.dart';
 import 'package:jobs_way/pages/apply_job_page.dart';
 
 class JobDetailsPage extends StatefulWidget {
@@ -20,34 +20,6 @@ class JobDetailsPage extends StatefulWidget {
 class _JobDetailsPageState extends State<JobDetailsPage> {
 
   final widgets = Get.put(WidgetController());
-
-  String companyName = 'Loading..';
-  String companyLogo = 'http://cdn.onlinewebfonts.com/svg/img_235526.png';
-
-
-  Future<void> fetchCompany() async {
-
-    String companyId = '${widget.jobDetails!.companyId}';
-
-    String companyApi = "https://jobsway-user.herokuapp.com/api/v1/user/getcompany/$companyId";
-    var companyResult = await http.get(Uri.parse(companyApi));
-    if(companyResult.statusCode == 200){
-      var result = jsonDecode(companyResult.body);
-      print(result);
-
-      companyName = result["companyName"];
-      companyLogo = result["logoUrl"];
-      setState(() {
-
-      });
-    }
-  }
-
-  @override
-  initState(){
-    super.initState();
-    fetchCompany();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,70 +37,70 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: Material(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    elevation: 5,
-                    child: Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Material(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                            elevation: 5,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 0, vertical: 0),
-                              child: SizedBox(
-                                width: 120,
-                                height: 120,
-                                child:ClipRRect(
-                                  borderRadius: BorderRadius.circular(15),
-                                  child: Image.network(
-                                    companyLogo,
-                                    fit: BoxFit.cover,
-                                  ),
+              SizedBox(
+                width: double.infinity,
+                child: Material(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  elevation: 5,
+                  child: Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Material(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          elevation: 5,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 0, vertical: 0),
+                            child: SizedBox(
+                              width: 120,
+                              height: 120,
+                              child:ClipRRect(
+                                borderRadius: BorderRadius.circular(15),
+                                child: Image.network(
+                                  '${widget.jobDetails!.companyDetails![0].logoUrl}',
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 15,
+                        ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          '${widget.jobDetails!.companyDetails![0].companyName}',
+                          style: GoogleFonts.poppins(
+                            color: Colors.black,
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold,
                           ),
-                          Text(
-                            companyName,
-                            style: GoogleFonts.poppins(
-                              color: Colors.black,
-                              fontSize: 40,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          '${widget.jobDetails!.jobLocation}',
+                          style: GoogleFonts.poppins(
+                            color: Colors.grey,
+                            fontSize: 18,
                           ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            '${widget.jobDetails!.jobLocation}',
-                            style: GoogleFonts.poppins(
-                              color: Colors.grey,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
+              ),
+              const SizedBox(
+                height: 25,
               ),
               Center(
                 child: Text(
@@ -147,7 +119,7 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    '₹ 30000 - 50000',
+                    '₹ ${widget.jobDetails!.minSalary} - ${widget.jobDetails!.maxSalary}',
                     style: GoogleFonts.poppins(
                       color: Colors.green,
                       fontSize: 25,
@@ -165,22 +137,53 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
               const SizedBox(
                 height: 20,
               ),
-              Row(
-                children: [
-                  Text(
-                    'Qualification :',
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: 22,
-                    ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Qualification :',
+                  style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: 22,
                   ),
-                ],
+                ),
               ),
-              Text(
-                '${widget.jobDetails!.qualification}',
-                style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontSize: 18,
+              const SizedBox(
+                height: 20,
+              ),
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: widget.jobDetails!.qualification!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Row(
+                    children: [
+                      const Icon(Icons.arrow_forward_outlined),
+                      const SizedBox(width: 15,),
+                      Expanded(
+                        child: Text(
+                          widget.jobDetails!.qualification![index],
+                          style: GoogleFonts.poppins(
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+
+              const SizedBox(
+                height: 20,
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Education :',
+                  style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: 22,
+                  ),
                 ),
               ),
               const SizedBox(
@@ -188,73 +191,95 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
               ),
               Row(
                 children: [
-                  Text(
-                    'Education :',
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: 22,
+                  const Icon(Icons.arrow_forward_outlined),
+                  const SizedBox(width: 15,),
+                  Expanded(
+                    child: Text(
+                      '${widget.jobDetails!.education}',
+                      style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                 ],
               ),
-              Text(
-                '${widget.jobDetails!.education}',
-                style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
+              const SizedBox(
+                height: 20,
+              ),
+
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Languages :',
+                  style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: 22,
+                  ),
                 ),
               ),
               const SizedBox(
                 height: 20,
               ),
-              Row(
-                children: [
-                  Text(
-                    'Languages :',
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: 22,
-                    ),
-                  ),
-                ],
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: widget.jobDetails!.language!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Row(
+                    children: [
+                      const Icon(Icons.arrow_forward_outlined),
+                      const SizedBox(width: 15,),
+                      Expanded(
+                        child: Text(
+                          widget.jobDetails!.language![index],
+                          style: GoogleFonts.poppins(
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    '${widget.jobDetails!.language}',
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+              const SizedBox(
+                height: 20,
               ),
-              Row(
-                children: [
-                  Text(
-                    'Skills :',
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: 22,
-                    ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Skills :',
+                  style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: 22,
                   ),
-                ],
+                ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    '${widget.jobDetails!.skills}',
-                    style: GoogleFonts.poppins(
-                      color: Colors.black,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+              const SizedBox(
+                height: 20,
+              ),
+              ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: widget.jobDetails!.skills!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Row(
+                    children: [
+                      const Icon(Icons.arrow_forward_outlined),
+                      const SizedBox(width: 15,),
+                      Expanded(
+                        child: Text(
+                          widget.jobDetails!.skills![index],
+                          style: GoogleFonts.poppins(
+                            color: Colors.black,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
               const SizedBox(
                 height: 20,

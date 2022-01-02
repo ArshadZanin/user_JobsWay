@@ -145,6 +145,7 @@ class _SignUpState extends State<SignUp> {
                                 widgets.textFieldGrey(
                                   label: 'Phone',
                                   textController: phoneController,
+                                    keyboardType: TextInputType.number
                                 ),
                                 widgets.textFieldGreyObscure(
                                   label: 'Password',
