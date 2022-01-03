@@ -9,7 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
 import 'package:jobs_way/model/otp_signup_model.dart';
 import 'package:jobs_way/model/signup_model.dart';
-import 'package:jobs_way/pages/home_page.dart';
+import 'package:jobs_way/pages/main_pages/home_page.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';

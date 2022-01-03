@@ -3,9 +3,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:jobs_way/login_signup/log_in.dart';
 import 'package:jobs_way/login_signup/sign_up.dart';
-import 'package:jobs_way/pages/add_profile_page.dart';
-import 'package:jobs_way/pages/build_resume.dart';
-import 'package:jobs_way/pages/choose_plan_page.dart';
+import 'package:jobs_way/pages/other_pages/add_profile_page.dart';
+import 'package:jobs_way/pages/other_pages/build_resume.dart';
+import 'package:jobs_way/pages/other_pages/choose_plan_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatelessWidget {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:jobs_way/pages/checking_page.dart';
+import 'package:jobs_way/pages/other_pages/checking_page.dart';
 
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -40,5 +40,4 @@ class MyApp extends StatelessWidget {
     }
     return MaterialColor(color.value, swatch);
   }
-
 }

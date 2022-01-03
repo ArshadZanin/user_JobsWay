@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
 import 'package:jobs_way/login_signup/log_in.dart';
-import 'package:jobs_way/pages/home_page.dart';
+import 'package:jobs_way/pages/main_pages/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CheckingPage extends StatefulWidget {

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
 import 'package:jobs_way/model/task_list_model.dart';
-import 'package:jobs_way/pages/test_job_page.dart';
+import 'package:jobs_way/pages/other_pages/test_job_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 

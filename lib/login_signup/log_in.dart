@@ -12,7 +12,7 @@ import 'package:jobs_way/login_signup/sign_up.dart';
 import 'package:get/get.dart';
 import 'package:jobs_way/model/google_signup_model.dart';
 import 'package:jobs_way/model/otp_signup_model.dart';
-import 'package:jobs_way/pages/home_page.dart';
+import 'package:jobs_way/pages/main_pages/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 

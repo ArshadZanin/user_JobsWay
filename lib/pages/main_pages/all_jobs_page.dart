@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
 import 'package:jobs_way/model/fetch_feature_job_model.dart';
 import 'package:jobs_way/model/job_fetch_model.dart';
-import 'package:jobs_way/pages/job_details_page.dart';
+import 'package:jobs_way/pages/main_pages/job_details_page.dart';
 import 'package:http/http.dart' as http;
 
 class AllJobsPage extends StatefulWidget {
