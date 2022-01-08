@@ -39,7 +39,6 @@ class JobList {
     this.hrId,
     this.status,
     this.payPlan,
-    this.applications,
     this.companyDetails,
   });
 
@@ -60,7 +59,6 @@ class JobList {
   String? hrId;
   bool? status;
   String? payPlan;
-  Applications? applications;
   List<CompanyDetail>? companyDetails;
 
   factory JobList.fromJson(Map<String, dynamic> json) => JobList(
@@ -81,7 +79,6 @@ class JobList {
     hrId: json["hrId"],
     status: json["status"],
     payPlan: json["payPlan"],
-    applications: Applications.fromJson(json["applications"]),
     companyDetails: List<CompanyDetail>.from(json["companyDetails"].map((x) => CompanyDetail.fromJson(x))),
   );
 
@@ -103,64 +100,7 @@ class JobList {
     "hrId": hrId,
     "status": status,
     "payPlan": payPlan,
-    "applications": applications!.toJson(),
     "companyDetails": List<dynamic>.from(companyDetails!.map((x) => x.toJson())),
-  };
-}
-
-class Applications {
-  Applications({
-    this.userId,
-    this.firstName,
-    this.secondName,
-    this.email,
-    this.phone,
-    this.location,
-    this.experience,
-    this.portfolio,
-    this.imgUrl,
-    this.resumeUrl,
-    this.status,
-  });
-
-  String? userId;
-  String? firstName;
-  String? secondName;
-  String? email;
-  String? phone;
-  String? location;
-  String? experience;
-  String? portfolio;
-  String? imgUrl;
-  String? resumeUrl;
-  String? status;
-
-  factory Applications.fromJson(Map<String, dynamic> json) => Applications(
-    userId: json["userId"],
-    firstName: json["firstName"],
-    secondName: json["secondName"],
-    email: json["email"],
-    phone: json["phone"],
-    location: json["location"],
-    experience: json["experience"],
-    portfolio: json["portfolio"],
-    imgUrl: json["imgUrl"],
-    resumeUrl: json["resumeUrl"],
-    status: json["status"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "userId": userId,
-    "firstName": firstName,
-    "secondName": secondName,
-    "email": email,
-    "phone": phone,
-    "location": location,
-    "experience": experience,
-    "portfolio": portfolio,
-    "imgUrl": imgUrl,
-    "resumeUrl": resumeUrl,
-    "status": status,
   };
 }
 

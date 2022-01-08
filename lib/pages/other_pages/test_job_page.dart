@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/current_remaining_time.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
@@ -5,6 +9,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jobs_way/controller/widget_controller.dart';
 import 'package:jobs_way/model/task_list_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class TestJobPage extends StatefulWidget {
   const TestJobPage({Key? key, required this.taskList}) : super(key: key);
@@ -22,6 +28,66 @@ class _TestJobPageState extends State<TestJobPage> {
   int endTime = DateTime.now().millisecondsSinceEpoch + 1000 * 0;
 
   bool timeout = false;
+
+  final answerController = TextEditingController();
+
+
+  Future<bool> testJob() async {
+
+    final preferences = await SharedPreferences.getInstance();
+    String? id = preferences.getString("id");
+
+    try{
+
+      String apiUrl =
+          'https://jobsway-user.herokuapp.com/api/v1/user/task/completed/$id';
+      print(apiUrl);
+      print(widget.taskList.id);
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        body: {
+          "answerUrl": answerController.text.trim(),
+          "taskId" : widget.taskList.id
+        },
+      );
+
+      print(response.statusCode);
+      print(response.body);
+
+      if (response.statusCode == 200) {
+        final String responseString = response.body;
+        print(responseString);
+        var jsonValue = jsonDecode(responseString);
+        if(jsonValue['msg'] == "Task Submitted Successfully."){
+          return true;
+        }else{
+          return false;
+        }
+        // return userModelOtpFromJson(responseString);
+      } else {
+        final result = jsonDecode(response.body);
+        if (result['error'] != null) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('${result['error']}',textAlign: TextAlign.center,),
+          ));
+        }
+        return false;
+      }
+    }on SocketException {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Check network connection',textAlign: TextAlign.center,),
+      ));
+    } on TimeoutException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('$e',textAlign: TextAlign.center,),
+      ));
+    } on Error catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('$e',textAlign: TextAlign.center,),
+      ));
+    }
+    return false;
+  }
 
   @override
   initState(){
@@ -156,19 +222,30 @@ class _TestJobPageState extends State<TestJobPage> {
               ),
               widgets.textFieldGrey(
                 label: 'Paste answer link',
+                textController: answerController,
               ),
               Padding(
                 padding: const EdgeInsets.all(18.0),
                 child: widgets.textColorButton(
                     text: !timeout ? 'Submit Task' : 'Go Back',
-                    onPress: () {
+                    onPress: () async {
+                      var result = await testJob();
+                      if(result){
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('Task Uploaded',textAlign: TextAlign.center,),
+                        ));
+                      }else{
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text('Task Not Uploaded',textAlign: TextAlign.center,),
+                        ));
+                      }
+                      Navigator.pop(context);
                       // Navigator.pushReplacement(
                       //   context,
                       //   MaterialPageRoute(
                       //     builder: (_) => const HomePage(),
                       //   ),
                       // );
-                      Navigator.pop(context);
                     }),
               ),
             ],

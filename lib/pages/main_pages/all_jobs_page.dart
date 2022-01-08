@@ -116,7 +116,7 @@ class _AllJobsPageState extends State<AllJobsPage> {
                             companyName: '${value.companyDetails![0].companyName}',
                             companyLocation: value.jobLocation,
                             jobName: value.jobTitle!,
-                            salaryRange: '${value.minSalary} - ${value.minSalary}',
+                            salaryRange: '${value.minSalary ?? '***'} - ${value.minSalary ?? '***'}',
                             experience: '${value.minExp} - ${value
                                 .maxExp} year',
                             postTime: '10 days',

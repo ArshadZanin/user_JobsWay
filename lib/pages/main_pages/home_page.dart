@@ -12,7 +12,7 @@ import 'package:jobs_way/model/otp_signup_model.dart';
 import 'package:jobs_way/pages/main_pages/all_jobs_page.dart';
 import 'package:jobs_way/pages/main_pages/featured_jobs.dart';
 import 'package:jobs_way/pages/main_pages/home_screen_page.dart';
-import 'package:jobs_way/pages/other_pages/my_jobs_page.dart';
+import 'package:jobs_way/pages/other_pages/assigned_tasks.dart';
 import 'package:jobs_way/pages/main_pages/settings_page.dart';
 import 'package:badges/badges.dart';
 import 'package:path_provider/path_provider.dart';
@@ -48,6 +48,7 @@ class _HomePageState extends State<HomePage> {
   String instagram = '';
   String twitter = '';
   String facebook = '';
+  String portfolio = '';
 
   Future<void> fetchAndUpdate() async {
     var user = await apis.fetchUser(context);
@@ -56,20 +57,32 @@ class _HomePageState extends State<HomePage> {
       firstName = names[0];
       secondName = names[1];
       jobTitle = user.designation ?? '';
-      for(var x in user.skills!){
-        skills.add(x);
-      }
-      print(skills);
       location = user.location ?? '';
       email = user.email ?? '';
       phone = user.phone ?? '';
-      for(var x in user.experience!){
-        experience.add({"yearFrom" : x.yearFrom!,"yearTo" : x.yearTo!, "positionTitle":x.positionTitle!,"desc":x.desc!});
+
+      if(jobTitle == '' || location == '' || email == '' || phone == ''){
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Please update your profile!',textAlign: TextAlign.center,),
+        ));
+      }
+
+      if(user.skills!.isNotEmpty){
+        for (var x in user.skills!) {
+          skills.add(x);
+        }
+      }
+      print(skills);
+      if(user.experience != null){
+        for(var x in user.experience!){
+          experience.add({"yearFrom" : x.yearFrom!,"yearTo" : x.yearTo!, "positionTitle":x.positionTitle!,"desc":x.desc!});
+        }
       }
       linkedin = user.linkedIn ?? '';
       instagram = user.instagram ?? '';
       twitter = user.twitter ?? '';
       facebook = user.facebook ?? '';
+      portfolio = user.portfolio ?? '';
 
       var response = await http.get(Uri.parse(user.imgUrl!));
       var value = base64Encode(response.bodyBytes);
@@ -97,7 +110,7 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               HomeScreenPage(),
               AllJobsPage(),
-              MyJobsPage(),
+              AssignedTaskPage(),
               SettingsPage(),
             ],
           ),
@@ -160,6 +173,7 @@ class _HomePageState extends State<HomePage> {
     await preferences.setString("instagram", instagram);
     await preferences.setString("twitter", twitter);
     await preferences.setString("facebook", facebook);
+    await preferences.setString("portfolio", facebook);
     await preferences.setStringList("skillList", skills);
   }
 

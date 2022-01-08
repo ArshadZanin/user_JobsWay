@@ -181,33 +181,28 @@ class _ApplyJobPageState extends State<ApplyJobPage> {
                 label: 'Portfolio Link',
                 textController: portfolioC,
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: widgets.textFieldGrey(
-                      textController: resumeController,
-                      readOnly: true,
-                      label: 'Upload Resume',
-                    ),
-                  ),
-                  IconButton(icon: const Icon(Icons.upload),
-                    onPressed: () async {
-                      final result = await FilePicker.platform.pickFiles(
-                        type: FileType.custom,
-                        allowedExtensions: ['pdf'],
-                      );
-                      if(result == null) return;
-                      ///open this file
-                      var file = result.files.first;
-                      // final newFile = await saveFilePermanently(file);
-                      // var newFile = file.getSomeCorrectFile();
-                      filePdf = File(file.path!);
+              widgets.textFieldGreySuffix(
+                icon: IconButton(
+                  icon: const Icon(Icons.upload),
+                  onPressed: () async {
+                    final result = await FilePicker.platform.pickFiles(
+                      type: FileType.custom,
+                      allowedExtensions: ['pdf'],
+                    );
+                    if(result == null) return;
+                    ///open this file
+                    var file = result.files.first;
+                    // final newFile = await saveFilePermanently(file);
+                    // var newFile = file.getSomeCorrectFile();
+                    filePdf = File(file.path!);
 
-                      setState(() {
-                        resumeController.text = file.name;
-                      });
-                    },),
-                ],
+                    setState(() {
+                      resumeController.text = file.name;
+                    });
+                  },),
+                textController: resumeController,
+                readOnly: true,
+                label: 'Upload Resume',
               ),
 
               Padding(

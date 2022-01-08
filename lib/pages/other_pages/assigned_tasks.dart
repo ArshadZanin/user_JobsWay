@@ -11,14 +11,14 @@ import 'package:jobs_way/pages/other_pages/test_job_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-class MyJobsPage extends StatefulWidget {
-  const MyJobsPage({Key? key}) : super(key: key);
+class AssignedTaskPage extends StatefulWidget {
+  const AssignedTaskPage({Key? key}) : super(key: key);
 
   @override
-  _MyJobsPageState createState() => _MyJobsPageState();
+  _AssignedTaskPageState createState() => _AssignedTaskPageState();
 }
 
-class _MyJobsPageState extends State<MyJobsPage> {
+class _AssignedTaskPageState extends State<AssignedTaskPage> {
 
   final widgets = Get.put(WidgetController());
 
@@ -28,13 +28,11 @@ class _MyJobsPageState extends State<MyJobsPage> {
     var id = preference.getString('id');
     try {
       String apiUrl = 'https://jobsway-user.herokuapp.com/api/v1/user/tasks/$id';
-      print(apiUrl);
       final response = await http.get(Uri.parse(apiUrl));
 
       if (response.statusCode == 200) {
         final String responseString = response.body;
 
-        print('{"taskList": $responseString}');
         yield taskListFromJson('{"taskList": $responseString}');
       } else {
         final result = jsonDecode(response.body);
@@ -71,7 +69,15 @@ class _MyJobsPageState extends State<MyJobsPage> {
     return Scaffold(
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: widgets.headingTexts(
+              blackText: 'Assigned',
+              colorText: 'Tasks.',
+            ),
+          ),
           Expanded(
+            flex: 2,
             child: StreamBuilder(
               stream: fetchTasks(),
               builder: (BuildContext context, AsyncSnapshot<TaskList?> snapshot) {
@@ -81,6 +87,13 @@ class _MyJobsPageState extends State<MyJobsPage> {
                     itemCount: snapshot.data!.taskList!.length,
                     shrinkWrap: true,
                     itemBuilder: (BuildContext context, int index) {
+
+                      if(snapshot.data!.taskList!.isEmpty){
+                        return const Center(
+                          child: Text('No Assigned Tasks'),
+                        );
+                      }
+
                       final value = snapshot.data!.taskList![index];
                       return widgets.completeTaskCard(
                         srcImage:
@@ -88,13 +101,14 @@ class _MyJobsPageState extends State<MyJobsPage> {
                         companyName: '${value.companyDetails![0].companyName}',
                         companyLocation: '${value.companyDetails![0].location}',
                         duration: '${value.time}',
-                        onPress: () {
-                          Navigator.push(
+                        onPress: () async {
+                          await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (_) => TestJobPage(taskList: value,),
                             ),
                           );
+                          fetchTasks();
                         },
                       );
                     },
@@ -108,26 +122,6 @@ class _MyJobsPageState extends State<MyJobsPage> {
                   );
                 }
               },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: widgets.headingTexts(
-                blackText: 'My',
-              colorText: 'Jobs Details:',
-            ),
-          ),
-          const SizedBox(height: 10,),
-          Expanded(
-            child: Center(
-              child: widgets.jobDetailsCard(
-                  statusWidget: widgets.pendingField((){}), //widgets.approvedField((){}), //widgets.rejectField((){}),
-                  srcImage:
-                  'https://img.flaticon.com/icons/png/512/2702/2702602.png?'
-                      'size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF',
-                jobName: 'Sr.Flutter Developer',
-                jobLocation: 'Bangalore, India'
-              ),
             ),
           ),
         ],

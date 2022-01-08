@@ -24,6 +24,7 @@ class AddProfilePage extends StatefulWidget {
 class _AddProfilePageState extends State<AddProfilePage> {
   final widgets = Get.put(WidgetController());
 
+  File? filePdf;
   File? image;
   Uint8List? bytesImage;
   bool showImage = false;
@@ -454,33 +455,28 @@ class _AddProfilePageState extends State<AddProfilePage> {
               widgets.textFieldGrey(
                   label: 'Portfolio Link', textController: portfolioController),
 
-              Row(
-                children: [
-                  Expanded(
-                    child: widgets.textFieldGrey(
-                      textController: resumeController,
-                      readOnly: true,
-                      label: 'Upload Resume',
-                    ),
-                  ),
-                  IconButton(icon: const Icon(Icons.upload),
-                    onPressed: () async {
-                      final result = await FilePicker.platform.pickFiles(
-                        type: FileType.custom,
-                        allowedExtensions: ['pdf'],
-                      );
-                      if(result == null) return;
-                      ///open this file
-                      final file = result.files.first;
-                      // final newFile = await saveFilePermanently(file);
+              widgets.textFieldGreySuffix(
+                icon: IconButton(
+                  icon: const Icon(Icons.upload),
+                  onPressed: () async {
+                    final result = await FilePicker.platform.pickFiles(
+                      type: FileType.custom,
+                      allowedExtensions: ['pdf'],
+                    );
+                    if(result == null) return;
+                    ///open this file
+                    var file = result.files.first;
+                    // final newFile = await saveFilePermanently(file);
+                    // var newFile = file.getSomeCorrectFile();
+                    filePdf = File(file.path!);
 
-
-                      setState(() {
-                        resumeController.text = file.name;
-                      });
-                      print(file.name);
-                    },),
-                ],
+                    setState(() {
+                      resumeController.text = file.name;
+                    });
+                  },),
+                textController: resumeController,
+                readOnly: true,
+                label: 'Upload Resume',
               ),
               const SizedBox(
                 height: 15,
@@ -507,6 +503,11 @@ class _AddProfilePageState extends State<AddProfilePage> {
                         var value = '';
                         if(image != null){
                           value = base64Encode(image!.readAsBytesSync());
+                        }else{
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text('Add Profile Picture!',textAlign: TextAlign.center,),
+                          ));
+                          return;
                         }
                         firstName = firstNameController.text;
                         secondName = secondNameController.text;

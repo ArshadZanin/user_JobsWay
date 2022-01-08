@@ -155,6 +155,46 @@ class WidgetController extends GetxController {
     );
   }
 
+  Widget textFieldGreySuffix({
+    String label = '',
+    TextEditingController? textController,
+    required Widget icon,
+    bool readOnly = false,
+    int maxLines = 1,
+    TextInputType keyboardType = TextInputType.text,
+    bool obscure = false,
+    Function(String value)? onChange,
+  }) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: const Color(0xFFE6E6E6),
+      ),
+      child: TextFormField(
+        onChanged: onChange,
+        obscureText: obscure,
+        keyboardType: keyboardType,
+        readOnly: readOnly,
+        controller: textController,
+        maxLines: maxLines,
+        decoration: InputDecoration(
+          suffixIcon: icon,
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          errorBorder: InputBorder.none,
+          disabledBorder: InputBorder.none,
+          labelText: label,
+          labelStyle: GoogleFonts.poppins(
+            color: const Color(0xffAEAEAE),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget textFieldGreyObscure({
     String label = '',
     TextEditingController? textController,
